@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using SimulationStandard.Exceptions;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SimulationStandard;
@@ -35,6 +36,7 @@ public sealed class SimulationValuesDictionary : IDictionary<string, object>
     /// </summary>
     /// <param name="key">Key.</param>
     /// <returns>Value for a given key.</returns>
+    /// <exception cref="UnsupportedTypeException">Unsupported type.</exception>
     public object this[string name]
     {
         get => _params[name];
@@ -47,7 +49,7 @@ public sealed class SimulationValuesDictionary : IDictionary<string, object>
             }
             else
             {
-                // TODO Throw Exception
+                throw new UnsupportedTypeException { ReceivedType = value.GetType()};
             }
         }
     }

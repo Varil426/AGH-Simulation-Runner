@@ -20,15 +20,5 @@ public interface ISimulation : IDisposable
     /// Creates <see cref="ISimulationResults"/> template.
     /// </summary>
     /// <returns>Results template.</returns>
-    public ISimulationResults CreateSimulationResultsTemplate(); // TODO Do I really need it?
-
-    /// <summary>
-    /// Terminates a simulation (should also dispose).
-    /// </summary>
-    /// <returns><see langword="true"/> if simulation was terminated successfully; <see langword="false"/> otherwise.</returns>
-    public bool Terminate()
-    {
-        Dispose();
-        return true;
-    }
+    public ISimulationResults CreateSimulationResultsTemplate();
 }
