@@ -15,10 +15,4 @@ public interface ISimulation : IDisposable
     /// </summary>
     /// <returns>Simulation results.</returns>
     public ISimulationResults Run();
-
-    /// <summary>
-    /// Creates <see cref="ISimulationResults"/> template.
-    /// </summary>
-    /// <returns>Results template.</returns>
-    public ISimulationResults CreateSimulationResultsTemplate();
 }

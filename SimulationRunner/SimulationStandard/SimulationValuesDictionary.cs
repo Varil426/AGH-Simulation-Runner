@@ -106,7 +106,7 @@ public sealed class SimulationValuesDictionary : IDictionary<string, object>
 
     public bool Remove(string key) => _params.Remove(key);
 
-    public bool Remove(KeyValuePair<string, object> item) => _params.Remove(item.Key);
+    public bool Remove(KeyValuePair<string, object> item) => _params[item.Key] == item.Value ? _params.Remove(item.Key) : false;
 
     public bool TryGetValue(string key, [MaybeNullWhen(false)] out object value) => _params.TryGetValue(key, out value);
 
