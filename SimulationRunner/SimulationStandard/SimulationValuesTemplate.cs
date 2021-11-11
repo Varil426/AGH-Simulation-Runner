@@ -47,21 +47,15 @@ public abstract class SimulationValuesTemplate : ISimulationValuesTemplate
 
     public bool ContainsKey(string key) => _parameterNameToType.ContainsKey(key);
 
-    public void CopyTo(KeyValuePair<string, Type>[] array, int arrayIndex)
-    {
-        foreach (var kvp in _parameterNameToType)
-        {
-            array[arrayIndex++] = kvp;
-        }
-    }
+    void ICollection<KeyValuePair<string, Type>>.CopyTo(KeyValuePair<string, Type>[] array, int arrayIndex) => ((ICollection<KeyValuePair<string, Type>>)_parameterNameToType).CopyTo(array, arrayIndex);
 
     public IEnumerator<KeyValuePair<string, Type>> GetEnumerator() => _parameterNameToType.GetEnumerator();
 
     public bool Remove(string key) => _parameterNameToType.Remove(key);
 
-    public bool Remove(KeyValuePair<string, Type> item) => _parameterNameToType[item.Key] == item.Value ? _parameterNameToType.Remove(item.Key) : false;
+    bool ICollection<KeyValuePair<string, Type>>.Remove(KeyValuePair<string, Type> item) => ((ICollection<KeyValuePair<string, Type>>)_parameterNameToType).Remove(item);
 
     public bool TryGetValue(string key, [MaybeNullWhen(false)] out Type value) => _parameterNameToType.TryGetValue(key, out value);
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<KeyValuePair<string, Type>>)_parameterNameToType).GetEnumerator();
 }

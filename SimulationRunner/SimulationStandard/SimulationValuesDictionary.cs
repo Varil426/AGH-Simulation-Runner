@@ -49,9 +49,9 @@ public sealed class SimulationValuesDictionary : IDictionary<string, object>
     /// </summary>
     public IEnumerable<(string Name, Type Type)> ContainedTypes => _params.Select(x => (x.Key, x.Value.GetType()));
 
-    public ICollection<string> Keys => throw new NotImplementedException();
+    public ICollection<string> Keys => _params.Keys;
 
-    public ICollection<object> Values => throw new NotImplementedException();
+    public ICollection<object> Values => _params.Values;
 
     public int Count => _params.Count;
 
@@ -67,21 +67,15 @@ public sealed class SimulationValuesDictionary : IDictionary<string, object>
 
     public bool ContainsKey(string key) => _params.ContainsKey(key);
 
-    public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
-    {
-        foreach (var kvp in _params.ToList())
-        {
-            array[arrayIndex++] = kvp;
-        }
-    }
+    void ICollection<KeyValuePair<string, object>>.CopyTo(KeyValuePair<string, object>[] array, int arrayIndex) => ((ICollection<KeyValuePair<string, object>>)_params).CopyTo(array, arrayIndex);
 
     public IEnumerator<KeyValuePair<string, object>> GetEnumerator() => _params.GetEnumerator();
 
     public bool Remove(string key) => _params.Remove(key);
 
-    public bool Remove(KeyValuePair<string, object> item) => _params[item.Key] == item.Value ? _params.Remove(item.Key) : false;
+    bool ICollection<KeyValuePair<string, object>>.Remove(KeyValuePair<string, object> item) => ((ICollection<KeyValuePair<string, object>>)_params).Remove(item);
 
     public bool TryGetValue(string key, [MaybeNullWhen(false)] out object value) => _params.TryGetValue(key, out value);
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<KeyValuePair<string, object>>)_params).GetEnumerator();
 }
