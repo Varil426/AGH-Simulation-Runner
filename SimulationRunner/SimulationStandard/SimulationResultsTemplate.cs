@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using SimulationStandard.Exceptions;
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml.Linq;
 
 namespace SimulationStandard;
 
@@ -10,7 +12,22 @@ public class SimulationResultsTemplate : ISimulationResultsTemplate
 {
     private readonly Dictionary<string, Type> _parameterNameToType = new(); 
 
-    public Type this[string key] { get => _parameterNameToType[key]; set => _parameterNameToType[key] = value; }
+    public Type this[string name]
+    { 
+        get => _parameterNameToType[name];
+
+        set
+        {
+            if (TypesHelper.CheckIfAllowedType(value.GetType()))
+            {
+                _parameterNameToType[name] = value;
+            }
+            else
+            {
+                throw new UnsupportedTypeException { ReceivedType = value.GetType() };
+            }
+        }
+    }
 
     public ICollection<string> Keys => _parameterNameToType.Keys;
 
@@ -20,7 +37,7 @@ public class SimulationResultsTemplate : ISimulationResultsTemplate
 
     public bool IsReadOnly => false;
 
-    public void Add(string key, Type value) => _parameterNameToType.Add(key, value);
+    public void Add(string key, Type value) => this[key] = value;
 
     public void Add(KeyValuePair<string, Type> item) => Add(item.Key, item.Value);
 

@@ -9,26 +9,6 @@ namespace SimulationStandard;
 /// </summary>
 public sealed class SimulationValuesDictionary : IDictionary<string, object>
 {
-    private static readonly HashSet<Type> _allowedTypes = new()
-    {
-        typeof(short),
-        typeof(int),
-        typeof(long),
-        typeof(float),
-        typeof(double),
-        typeof(decimal),
-        typeof(bool),
-        typeof(string),
-        typeof(IList<short>),
-        typeof(IList<int>),
-        typeof(IList<long>),
-        typeof(IList<float>),
-        typeof(IList<double>),
-        typeof(IList<decimal>),
-        typeof(IList<bool>),
-        typeof(IList<string>),
-    };
-
     private readonly Dictionary<string, object> _params = new();
 
     /// <summary>
@@ -43,7 +23,7 @@ public sealed class SimulationValuesDictionary : IDictionary<string, object>
 
         set
         {
-            if (CheckIfAllowedType(value.GetType()))
+            if (TypesHelper.CheckIfAllowedType(value.GetType()))
             {
                 _params[name] = value;
             }
@@ -76,13 +56,6 @@ public sealed class SimulationValuesDictionary : IDictionary<string, object>
     public int Count => _params.Count;
 
     public bool IsReadOnly => false;
-
-    /// <summary>
-    /// Checks whether this type of parameter is allowed.
-    /// </summary>
-    /// <param name="value">Obcjet to be checked.</param>
-    /// <returns><see langword="true"/> if type is allowed; <see langword="false"/> otherwise.</returns>
-    private static bool CheckIfAllowedType(Type type) => _allowedTypes.Any(type => type.IsAssignableTo(type));
 
     public void Add(string key, object value) => this[key] = value;
 
