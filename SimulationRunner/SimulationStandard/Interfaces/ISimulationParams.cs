@@ -1,4 +1,4 @@
-﻿namespace SimulationStandard;
+﻿namespace SimulationStandard.Interfaces;
 
 /// <summary>
 /// Defines parameters used by <see cref="ISimulation"/>.

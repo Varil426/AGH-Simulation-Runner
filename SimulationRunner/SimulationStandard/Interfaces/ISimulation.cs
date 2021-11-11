@@ -1,4 +1,4 @@
-﻿namespace SimulationStandard;
+﻿namespace SimulationStandard.Interfaces;
 
 /// <summary>
 /// Defines a simulation.

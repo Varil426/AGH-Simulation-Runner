@@ -1,4 +1,4 @@
-﻿namespace SimulationStandard;
+﻿namespace SimulationStandard.Interfaces;
 
 /// <summary>
 /// Defines results returned by <see cref="ISimulation"/>.

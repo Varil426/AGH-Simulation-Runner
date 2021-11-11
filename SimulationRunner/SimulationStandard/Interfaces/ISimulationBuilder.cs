@@ -1,4 +1,4 @@
-﻿namespace SimulationStandard;
+﻿namespace SimulationStandard.Interfaces;
 
 /// <summary>
 /// Simulation Builder Interface. Should provide parameterless constructor.
@@ -11,6 +11,12 @@ public interface ISimulationBuilder
     /// <param name="simulationParams">Params to be used by a simulation.</param>
     /// <returns>Simulation instance.</returns>
     ISimulation CreateSimulation(ISimulationParams simulationParams);
+
+    /// <summary>
+    /// Creates <see cref="ISimulationParams"/> template.
+    /// </summary>
+    /// <returns>Params template.</returns>
+    public ISimulationParamsTemplate CreateSimulationParamsTemplate();
 
     /// <summary>
     /// Creates <see cref="ISimulationResults"/> template.
