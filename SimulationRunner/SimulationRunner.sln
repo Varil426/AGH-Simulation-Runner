@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulationStandard", "SimulationStandard\SimulationStandard.csproj", "{830759E4-199E-4286-A352-A7A9CFBAB650}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimulationStandard", "SimulationStandard\SimulationStandard.csproj", "{830759E4-199E-4286-A352-A7A9CFBAB650}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendAPI", "BackendAPI\BackendAPI.csproj", "{6B273B15-3456-433F-AB76-EC9230DA4E74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\Persistence.csproj", "{DF4347C8-D189-45F8-9C41-8E23A760CBF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{830759E4-199E-4286-A352-A7A9CFBAB650}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{830759E4-199E-4286-A352-A7A9CFBAB650}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{830759E4-199E-4286-A352-A7A9CFBAB650}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B273B15-3456-433F-AB76-EC9230DA4E74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B273B15-3456-433F-AB76-EC9230DA4E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B273B15-3456-433F-AB76-EC9230DA4E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B273B15-3456-433F-AB76-EC9230DA4E74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF4347C8-D189-45F8-9C41-8E23A760CBF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF4347C8-D189-45F8-9C41-8E23A760CBF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF4347C8-D189-45F8-9C41-8E23A760CBF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF4347C8-D189-45F8-9C41-8E23A760CBF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
