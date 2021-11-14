@@ -7,6 +7,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
