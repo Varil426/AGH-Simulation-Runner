@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>1b94a5ed-f3ee-443a-8937-a19f3d4d6c5f</ProjectGuid>
+    <ProjectGuid>3acfdf77-1e3a-4acb-b4e0-802ad96fb27e</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>backendapi</DockerServiceName>
