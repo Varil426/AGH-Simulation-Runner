@@ -46,6 +46,33 @@ namespace Persistence.Migrations
                     b.ToTable("ParamValues");
                 });
 
+            modelBuilder.Entity("Domain.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("Revoked")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshToken");
+                });
+
             modelBuilder.Entity("Domain.ResultValue", b =>
                 {
                     b.Property<Guid>("Id")
@@ -434,6 +461,17 @@ namespace Persistence.Migrations
                     b.Navigation("SimulationParamTemplate");
                 });
 
+            modelBuilder.Entity("Domain.RefreshToken", b =>
+                {
+                    b.HasOne("Domain.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.ResultValue", b =>
                 {
                     b.HasOne("Domain.SimulationResultTemplate", "SimulationResultTemplate")
@@ -594,6 +632,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.User", b =>
                 {
+                    b.Navigation("RefreshTokens");
+
                     b.Navigation("Simulations");
                 });
 #pragma warning restore 612, 618

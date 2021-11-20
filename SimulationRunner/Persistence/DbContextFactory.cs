@@ -17,7 +17,7 @@ public class DbContextFactory : IDesignTimeDbContextFactory<DataContext>
 
         var dbContextBuilder = new DbContextOptionsBuilder<DataContext>();
 
-        var connectionString = "User ID=root;Password=root;Host=postgresHost;Port=5432;Database=SimmulationRunner;Pooling=true";
+        var connectionString = "User ID=root;Password=root;Host=postgresHost;Port=5432;Database=SimulationRunner;Pooling=true";
 
         dbContextBuilder.UseNpgsql(connectionString);
 

@@ -1,10 +1,8 @@
 ﻿using Application.Errors;
 using Application.Validation;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Persistence;
 using System.Net;
 
 namespace Application.User;

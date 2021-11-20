@@ -1,42 +1,69 @@
 using Persistence;
 using Microsoft.EntityFrameworkCore;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Application.Interfaces;
+using BackendAPI.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add configuration
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddFluentValidation(options =>
+{
+    options.RegisterValidatorsFromAssemblyContaining<Application.User.User>();
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddMediatR(typeof(Application.User.User).Assembly);
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => /*builder.Configuration.Bind("JwtSettings", options)*/
+//builder.Services.AddDefaultIdentity<Domain.User>().AddEntityFrameworkStores<DataContext>();
+builder.Services
+    .AddIdentityCore<Domain.User>()
+    .AddEntityFrameworkStores<DataContext>()
+    .AddDefaultTokenProviders()
+    .AddSignInManager<SignInManager<Domain.User>>();
+builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("SecretKey")), // TODO Move key to secrets
-        ValidateAudience = false,
-        ValidateIssuer = false,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
-    };
+    options.User.RequireUniqueEmail = true;
 });
-builder.Services.AddIdentityCore<Domain.User>();
-builder.Services.AddDefaultIdentity<Domain.User>().AddEntityFrameworkStores<DataContext>();
+
+//builder.Services.AddIdentityServer().AddApiAuthorization<Domain.User, DataContext>();
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.SaveToken = true;
+        options.RequireHttpsMetadata = false;
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            /*ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidAudience = Configuration["JWT:ValidAudience"],
+            ValidIssuer = Configuration["JWT:ValidIssuer"],*/
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"])) // TODO Add secret
+        };
+    });
+builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
+
+builder.Services.AddMediatR(typeof(Application.User.User).Assembly);
 
 if (builder.Environment.IsDevelopment())
 {
     builder.Configuration.AddUserSecrets<Program>();
     builder.Services.AddDbContext<DataContext>(options =>
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"), x => x.MigrationsAssembly("Persistence"));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"), x => x.MigrationsAssembly(typeof(DataContext).Assembly.GetName().Name));
     });
 }
 else
