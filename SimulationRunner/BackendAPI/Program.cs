@@ -9,16 +9,22 @@ using System.Text;
 using Application.Interfaces;
 using BackendAPI.Security;
 using BackendAPI.Middleware;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add configuration
 
 // Add services to the container.
-builder.Services.AddControllers().AddFluentValidation(options =>
+/*builder.Services.AddCors(options =>
 {
-    options.RegisterValidatorsFromAssemblyContaining<Application.User.User>();
-});
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithExposedHeaders("WWW-Authenticate");
+    });
+});*/
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -48,17 +54,31 @@ builder.Services
         options.RequireHttpsMetadata = false;
         options.TokenValidationParameters = new TokenValidationParameters()
         {
-            /*ValidateIssuer = true,
+            ValidateIssuer = true,
             ValidateAudience = true,
-            ValidAudience = Configuration["JWT:ValidAudience"],
-            ValidIssuer = Configuration["JWT:ValidIssuer"],*/
+            ValidAudience = builder.Configuration["JWT:Audience"],
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"])) // TODO Add secret
         };
     });
+builder.Services.AddAuthorization();
+
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 
 builder.Services.AddMediatR(typeof(Application.User.User).Assembly);
 builder.Services.AddAutoMapper(typeof(Application.User.User).Assembly);
+
+builder.Services.AddControllers(options =>
+{
+    var policy = new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+                         .RequireAuthenticatedUser()
+                         .Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
+}).AddFluentValidation(options =>
+{
+    options.RegisterValidatorsFromAssemblyContaining<Application.User.User>();
+});
 
 if (builder.Environment.IsDevelopment())
 {
@@ -90,15 +110,15 @@ using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>(
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
-//app.MapControllers();
-
 app.UseMiddleware<ErrorHandlingMiddleware>();
+
+//app.MapControllers();
 
 app.UseEndpoints(endpoints =>
 {

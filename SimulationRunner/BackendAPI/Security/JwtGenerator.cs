@@ -11,10 +11,15 @@ namespace BackendAPI.Security;
 public class JwtGenerator : IJwtGenerator
 {
     private readonly SymmetricSecurityKey _key;
+    private readonly string _issuer;
+    private readonly string _audience;
+
     public JwtGenerator(IConfiguration config)
     {
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
-    }
+		_issuer = config["JWT:Issuer"];
+		_audience = config["JWT:Audience"];
+	}
 
     public string CreateToken(User user)
     {
@@ -27,8 +32,13 @@ public class JwtGenerator : IJwtGenerator
 		{
 			Subject = new ClaimsIdentity(claims),
 			Expires = DateTime.Now.AddMinutes(15),
-			SigningCredentials = credentials
+			SigningCredentials = credentials,
+			Issuer = _issuer,
+			Audience = _audience,
 		};
+
+		//var token = new JwtSecurityToken(issuer: _issuer, audience: _audience, claims: claims, expires: DateTime.Now.AddMinutes(15), notBefore: DateTime.Now, signingCredentials: credentials);
+
 		var tokenHandler = new JwtSecurityTokenHandler();
 		var token = tokenHandler.CreateToken(tokenDescriptor);
 		return tokenHandler.WriteToken(token);

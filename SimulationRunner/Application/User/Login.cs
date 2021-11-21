@@ -1,6 +1,4 @@
 ﻿using Application.Interfaces;
-using AutoMapper;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
 namespace Application.User;
@@ -49,7 +47,7 @@ public class Login
                 var refreshToken = _jwtGenerator.GenerateRefreshToken();
                 user.RefreshTokens.Add(refreshToken);
                 await _userManager.UpdateAsync(user);
-                return _mapper.Map<Domain.User, User>(user, options => options.ConstructServicesUsing(x => new User(user, _jwtGenerator, refreshToken.Token)));//new User(user, _jwtGenerator, refreshToken.Token);
+                return _mapper.Map<Domain.User, User>(user, options => options.ConstructServicesUsing(x => new User(user, _jwtGenerator, refreshToken.Token)));
             }
         
             throw new RestException(System.Net.HttpStatusCode.Unauthorized);
