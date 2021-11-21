@@ -23,6 +23,14 @@ public class UserController : BaseController
         return user;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<User>> GetCurrentUser()
+    {
+        var user = await Mediator.Send(new CurrentUser.Query());
+        SetTokenCookie(user.RefreshToken);
+        return user;
+    }
+
     private void SetTokenCookie(string refreshToken)
     {
         var cookieOptions = new CookieOptions
