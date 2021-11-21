@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Application.Interfaces;
 using BackendAPI.Security;
+using BackendAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,6 +96,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 //app.MapControllers();
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseEndpoints(endpoints =>
 {
