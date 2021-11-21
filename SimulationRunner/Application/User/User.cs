@@ -7,14 +7,11 @@ public class User
 {
     public User(Domain.User user, IJwtGenerator jwtGenerator, string refreshToken)
     {
-        UserName = user.UserName;
-        FirstName = user.FirstName;
-        LastName = user.LastName;
-        RefreshToken = refreshToken;
         Token = jwtGenerator.CreateToken(user);
+        RefreshToken = refreshToken;
     }
 
-    public string UserName { get; set; }
+    public string UserName { get; set; } = null!;
 
     public string? FirstName { get; set; }
 

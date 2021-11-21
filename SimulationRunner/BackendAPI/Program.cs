@@ -58,6 +58,7 @@ builder.Services
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
 
 builder.Services.AddMediatR(typeof(Application.User.User).Assembly);
+builder.Services.AddAutoMapper(typeof(Application.User.User).Assembly);
 
 if (builder.Environment.IsDevelopment())
 {

@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
@@ -27,12 +28,14 @@ public class Login
         private readonly UserManager<Domain.User> _userManager;
         private readonly SignInManager<Domain.User> _signInManager;
         private readonly IJwtGenerator _jwtGenerator;
+        private readonly IMapper _mapper;
 
-        public Handler(UserManager<Domain.User> userManager, SignInManager<Domain.User> signInManager, IJwtGenerator jwtGenerator)
+        public Handler(UserManager<Domain.User> userManager, SignInManager<Domain.User> signInManager, IJwtGenerator jwtGenerator, IMapper mapper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtGenerator = jwtGenerator;
+            _mapper = mapper;
         }
 
         public async Task<User> Handle(Query request, CancellationToken cancellationToken)
@@ -46,7 +49,7 @@ public class Login
                 var refreshToken = _jwtGenerator.GenerateRefreshToken();
                 user.RefreshTokens.Add(refreshToken);
                 await _userManager.UpdateAsync(user);
-                return new User(user, _jwtGenerator, refreshToken.Token);
+                return _mapper.Map<Domain.User, User>(user, options => options.ConstructServicesUsing(x => new User(user, _jwtGenerator, refreshToken.Token)));//new User(user, _jwtGenerator, refreshToken.Token);
             }
         
             throw new RestException(System.Net.HttpStatusCode.Unauthorized);
