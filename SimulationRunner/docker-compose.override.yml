@@ -3,8 +3,9 @@ version: '3.4'
 services:
   backendapi:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
+      - IS_DOCKER=true
     ports:
       - "80"
       - "443"

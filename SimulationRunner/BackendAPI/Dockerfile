@@ -20,4 +20,4 @@ RUN dotnet publish "BackendAPI.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "BackendAPI.dll", "--launch-profile Docker"] # TODO Lauch profile based on dockercompose
+ENTRYPOINT ["dotnet", "BackendAPI.dll"]
