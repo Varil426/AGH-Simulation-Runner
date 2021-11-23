@@ -1,11 +1,9 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace Domain;
 
-namespace Domain;
-
+[Index(nameof(Name), IsUnique = true)]
 public class Simulation
 {
-    public Simulation(Guid id, string name, byte[] files)
+    public Simulation(Guid id, string name, byte[] files, string fileType)
     {
         Id = id;
         Name = name;
@@ -13,6 +11,7 @@ public class Simulation
         SimulationResults = new Collection<SimulationRunAttempt>();
         SimulationResultsTemplate = new Collection<SimulationResultTemplate>();
         GetSimulationParamsTemplate = new Collection<SimulationParamTemplate>();
+        FileType = fileType;
     }
 
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -27,7 +26,11 @@ public class Simulation
 
     public string? Version { get; set; }
 
+    [Required]
     public byte[] Files { get; set; }
+
+    [Required]
+    public string FileType { get; set; }
 
     public virtual ICollection<SimulationRunAttempt> SimulationResults { get; set; }
 
