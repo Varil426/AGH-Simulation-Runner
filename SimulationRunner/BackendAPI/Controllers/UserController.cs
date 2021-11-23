@@ -16,7 +16,7 @@ public class UserController : BaseController
 
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<ActionResult<User>> Login(Login.Query query)
+    public async Task<ActionResult<UserDto>> Login(Login.Query query)
     {
         var user = await Mediator.Send(query);
         SetTokenCookie(user.RefreshToken);
@@ -24,7 +24,7 @@ public class UserController : BaseController
     }
 
     [HttpGet]
-    public async Task<ActionResult<User>> GetCurrentUser()
+    public async Task<ActionResult<UserDto>> GetCurrentUser()
     {
         var user = await Mediator.Send(new CurrentUser.Query());
         SetTokenCookie(user.RefreshToken);

@@ -5,9 +5,9 @@ namespace Application.User;
 
 public class CurrentUser
 {
-    public class Query : IRequest<User> { }
+    public class Query : IRequest<UserDto> { }
 
-    public class Handler : IRequestHandler<Query, User>
+    public class Handler : IRequestHandler<Query, UserDto>
     {
         private readonly UserManager<Domain.User> _userManager;
         private readonly IJwtGenerator _jwtGenerator;
@@ -22,13 +22,13 @@ public class CurrentUser
             _mapper = mapper;
         }
 
-        public async Task<User> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<UserDto> Handle(Query request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByNameAsync(_userAccessor.GetCurrentUsername());
             var refreshToken = _jwtGenerator.GenerateRefreshToken();
             user.RefreshTokens.Add(refreshToken);
             await _userManager.UpdateAsync(user);
-            return _mapper.Map<Domain.User, User>(user, options => options.ConstructServicesUsing(x => new User(user, _jwtGenerator, refreshToken.Token)));
+            return _mapper.Map<Domain.User, UserDto>(user, options => options.ConstructServicesUsing(x => new UserDto(user, _jwtGenerator, refreshToken.Token)));
         }
     }
 }

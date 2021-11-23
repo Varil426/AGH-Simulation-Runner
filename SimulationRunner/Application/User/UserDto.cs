@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace Application.User;
 
-public class User
+public class UserDto
 {
-    public User(Domain.User user, IJwtGenerator jwtGenerator, string refreshToken)
+    public UserDto(Domain.User user, IJwtGenerator jwtGenerator, string refreshToken)
     {
         Token = jwtGenerator.CreateToken(user);
         RefreshToken = refreshToken;

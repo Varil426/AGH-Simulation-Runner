@@ -5,7 +5,7 @@ namespace Application.User;
 
 public class Login
 {
-    public class Query : IRequest<User>
+    public class Query : IRequest<UserDto>
     {
         public string? Email { get; set; }
 
@@ -21,7 +21,7 @@ public class Login
         }
     }
 
-    public class Handler : IRequestHandler<Query, User>
+    public class Handler : IRequestHandler<Query, UserDto>
     {
         private readonly UserManager<Domain.User> _userManager;
         private readonly SignInManager<Domain.User> _signInManager;
@@ -36,7 +36,7 @@ public class Login
             _mapper = mapper;
         }
 
-        public async Task<User> Handle(Query request, CancellationToken cancellationToken)
+        public async Task<UserDto> Handle(Query request, CancellationToken cancellationToken)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
@@ -47,7 +47,7 @@ public class Login
                 var refreshToken = _jwtGenerator.GenerateRefreshToken();
                 user.RefreshTokens.Add(refreshToken);
                 await _userManager.UpdateAsync(user);
-                return _mapper.Map<Domain.User, User>(user, options => options.ConstructServicesUsing(x => new User(user, _jwtGenerator, refreshToken.Token)));
+                return _mapper.Map<Domain.User, UserDto>(user, options => options.ConstructServicesUsing(x => new UserDto(user, _jwtGenerator, refreshToken.Token)));
             }
         
             throw new RestException(System.Net.HttpStatusCode.Unauthorized);

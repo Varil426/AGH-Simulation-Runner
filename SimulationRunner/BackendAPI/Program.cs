@@ -66,8 +66,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 
-builder.Services.AddMediatR(typeof(Application.User.User).Assembly);
-builder.Services.AddAutoMapper(typeof(Application.User.User).Assembly);
+builder.Services.AddMediatR(typeof(Application.User.UserDto).Assembly);
+builder.Services.AddAutoMapper(typeof(Application.User.UserDto).Assembly);
 
 builder.Services.AddControllers(options =>
 {
@@ -77,7 +77,7 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 }).AddFluentValidation(options =>
 {
-    options.RegisterValidatorsFromAssemblyContaining<Application.User.User>();
+    options.RegisterValidatorsFromAssemblyContaining<Application.User.UserDto>();
 });
 
 if (builder.Environment.IsDevelopment())
