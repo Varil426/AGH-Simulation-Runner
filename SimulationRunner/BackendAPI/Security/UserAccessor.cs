@@ -1,5 +1,5 @@
-﻿using Application.Interfaces;
-using Domain;
+﻿using Application.Errors;
+using Application.Interfaces;
 using System.Security.Claims;
 
 namespace BackendAPI.Security;
@@ -13,8 +13,9 @@ public class UserAccessor : IUserAccessor
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string? GetCurrentUsername()
-    {
-        return _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    }
+    public string GetCurrentUsername() => _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value
+        ?? throw new RestException(System.Net.HttpStatusCode.BadRequest, new { User = "User claim not found." });
+
+    public string GetCurrentUserEmailAddress() =>_httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value
+        ?? throw new RestException(System.Net.HttpStatusCode.BadRequest, new { Email = "Email claim not found." });
 }

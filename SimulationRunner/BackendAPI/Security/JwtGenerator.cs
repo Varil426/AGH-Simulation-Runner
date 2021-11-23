@@ -24,7 +24,8 @@ public class JwtGenerator : IJwtGenerator
     public string CreateToken(User user)
     {
 		var claims = new List<Claim> {
-				new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
+				new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
+				new Claim(JwtRegisteredClaimNames.Email, user.Email)
 			};
 
 		var credentials = new SigningCredentials(_key, SecurityAlgorithms.HmacSha512Signature);

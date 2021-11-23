@@ -2,5 +2,7 @@
 
 public interface IUserAccessor
 {
-    string? GetCurrentUsername();
+    string GetCurrentUsername();
+
+    string GetCurrentUserEmailAddress();
 }
