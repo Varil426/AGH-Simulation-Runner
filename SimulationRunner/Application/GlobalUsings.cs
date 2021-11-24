@@ -4,3 +4,6 @@ global using Persistence;
 global using System.Linq;
 global using FluentValidation;
 global using Application.Errors;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;

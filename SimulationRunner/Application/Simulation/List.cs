@@ -1,6 +1,5 @@
-﻿using Application.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Application.Extensions;
+using Application.Interfaces;
 
 namespace Application.Simulation;
 
@@ -31,7 +30,7 @@ public class List
         {
             var user = await _userManager.FindByEmailAsync(_userAccessor.GetCurrentUserEmailAddress());
 
-            var simulations = await user.Simulations.OrderBy(x => x.Name).AsQueryable().ToListAsync();
+            var simulations = await user.Simulations.OrderBy(x => x.Name).AsQueryable().ToListAsyncSafe();
 
             return new SimulationCollection
             {

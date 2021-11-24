@@ -1,11 +1,16 @@
 ﻿namespace Domain;
 
-[Index(nameof(Name), IsUnique = true)]
 public class Simulation
 {
-    public Simulation(Guid id, string name, byte[] files, string fileType)
+    public enum AllowedFileTypesEnum
     {
-        Id = id;
+        Uknown,
+        DLL,
+        ZIP
+    }
+
+    public Simulation(string name, byte[] files, AllowedFileTypesEnum fileType)
+    {
         Name = name;
         Files = files;
         SimulationResults = new Collection<SimulationRunAttempt>();
@@ -30,7 +35,7 @@ public class Simulation
     public byte[] Files { get; set; }
 
     [Required]
-    public string FileType { get; set; }
+    public AllowedFileTypesEnum FileType { get; set; }
 
     public virtual ICollection<SimulationRunAttempt> SimulationResults { get; set; }
 
