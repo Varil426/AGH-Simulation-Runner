@@ -85,6 +85,8 @@ if (builder.Environment.IsDevelopment())
     builder.Configuration.AddUserSecrets<Program>();
     builder.Services.AddDbContext<DataContext>(options =>
     {
+        options.UseLazyLoadingProxies();
+
         if (Environment.GetEnvironmentVariable("IS_DOCKER") is null)
             options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"), x => x.MigrationsAssembly(typeof(DataContext).Assembly.GetName().Name));
         else
