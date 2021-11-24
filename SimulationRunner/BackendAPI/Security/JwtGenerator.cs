@@ -32,7 +32,7 @@ public class JwtGenerator : IJwtGenerator
 		var tokenDescriptor = new SecurityTokenDescriptor
 		{
 			Subject = new ClaimsIdentity(claims),
-			Expires = DateTime.Now.AddMinutes(15),
+			Expires = DateTime.Now.AddMinutes(15).AddDays(100), // TODO Remove days
 			SigningCredentials = credentials,
 			Issuer = _issuer,
 			Audience = _audience,
