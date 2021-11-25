@@ -9,7 +9,7 @@ services:
     image: ${DOCKER_REGISTRY-}backendapi
     build:
       context: .
-      dockerfile: BackendAPI/Dockerfile
+      dockerfile: ../BackendAPI/Dockerfile
     networks:
       - simulationRunner-network
     depends_on:
