@@ -14,13 +14,13 @@ public class DockerContainerManager : IDockerContainerManager
 
     private readonly DockerClient _dockerClient;
     private readonly IConfiguration _configuration;
-    private readonly DataContext _dataContext;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public DockerContainerManager(IConfiguration configuration, DataContext dataContext)
+    public DockerContainerManager(IConfiguration configuration, IServiceScopeFactory serviceScopeFactory)
     {
         // TODO Get URI form configuration
         _configuration = configuration;
-        _dataContext = dataContext;
+        _serviceScopeFactory = serviceScopeFactory;
         _dockerClient = new DockerClientConfiguration().CreateClient();
     }
 
