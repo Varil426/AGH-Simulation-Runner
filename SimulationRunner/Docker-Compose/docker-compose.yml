@@ -14,6 +14,8 @@ services:
       - simulationRunner-network
     depends_on:
       - postgresHost
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
   postgresHost:
     image: postgres:latest
     restart: always

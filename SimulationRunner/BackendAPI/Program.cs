@@ -11,6 +11,7 @@ using BackendAPI.Security;
 using BackendAPI.Middleware;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using BackendAPI.Docker;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,6 +66,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+builder.Services.AddSingleton<IDockerContainerManager, DockerContainerManager>();
 
 builder.Services.AddMediatR(typeof(Application.User.UserDto).Assembly);
 builder.Services.AddAutoMapper(typeof(Application.User.UserDto).Assembly);
