@@ -15,7 +15,7 @@ public class Simulation
         Files = files;
         SimulationResults = new Collection<SimulationRunAttempt>();
         SimulationResultsTemplate = new Collection<SimulationResultTemplate>();
-        GetSimulationParamsTemplate = new Collection<SimulationParamTemplate>();
+        SimulationParamsTemplate = new Collection<SimulationParamTemplate>();
         FileType = fileType;
     }
 
@@ -41,5 +41,5 @@ public class Simulation
 
     public virtual ICollection<SimulationResultTemplate> SimulationResultsTemplate { get; set; }
 
-    public virtual ICollection<SimulationParamTemplate> GetSimulationParamsTemplate { get; set; }
+    public virtual ICollection<SimulationParamTemplate> SimulationParamsTemplate { get; set; }
 }
