@@ -13,7 +13,7 @@ public class Simulation
     {
         Name = name;
         Files = files;
-        SimulationResults = new Collection<SimulationRunAttempt>();
+        SimulationRunAttempts = new Collection<SimulationRunAttempt>();
         SimulationResultsTemplate = new Collection<SimulationResultTemplate>();
         SimulationParamsTemplate = new Collection<SimulationParamTemplate>();
         FileType = fileType;
@@ -37,7 +37,7 @@ public class Simulation
     [Required]
     public AllowedFileTypesEnum FileType { get; set; }
 
-    public virtual ICollection<SimulationRunAttempt> SimulationResults { get; set; }
+    public virtual ICollection<SimulationRunAttempt> SimulationRunAttempts { get; set; }
 
     public virtual ICollection<SimulationResultTemplate> SimulationResultsTemplate { get; set; }
 
