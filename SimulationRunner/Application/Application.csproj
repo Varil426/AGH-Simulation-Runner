@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Persistence\Persistence.csproj" />
-    <ProjectReference Include="..\SimulationStandard\SimulationStandard.csproj" />
+    <ProjectReference Include="..\SimulationHandler\SimulationHandler.csproj" />
   </ItemGroup>
 
 </Project>
