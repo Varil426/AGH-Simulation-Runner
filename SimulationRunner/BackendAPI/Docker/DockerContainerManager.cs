@@ -28,9 +28,19 @@ public class DockerContainerManager : IDockerContainerManager
 
     public List<ContainerNode> FindUserContainers(User user) => _containers.TryGetValue(user, out var containers) ? containers : new List<ContainerNode>();
 
-    public void RunSimulation(Simulation simulation, Dictionary<string, JsonElement> parameters)
+    public async void RunSimulationAsync(Simulation simulation, Dictionary<string, JsonElement> parameters)
     {
-        // TODO
-        throw new NotImplementedException();
+        using var dataContext = _serviceScopeFactory.CreateAsyncScope().ServiceProvider.GetService(typeof(DataContext)) as DataContext ?? throw new Exception();
+
+        var simulationRunAttempt = new SimulationRunAttempt { Simulation = simulation, AttemptNumer = simulation.SimulationRunAttempts.Count, Id = new Guid(), Start = DateTime.Now };
+        simulation.SimulationRunAttempts.Add(simulationRunAttempt);
+
+        // TODO Generate simulation results template and parameters template when uploading simulation
+        // TODO Create folder structure ContainersData/{RunAttemptId}
+        // TODO Put parameters in special those folders
+        // TODO Implement runner
+        // TODO Implement background task watching over conteiners -> store results
+
+        await dataContext.SaveChangesAsync();
     }
 }

@@ -9,7 +9,7 @@ public interface IDockerContainerManager
 
     public List<ContainerNode> FindUserContainers(Domain.User user);
 
-    public void RunSimulation(Domain.Simulation simulation, Dictionary<string, JsonElement> parameters);
+    public void RunSimulationAsync(Domain.Simulation simulation, Dictionary<string, JsonElement> parameters);
 
     // TODO Rest
 }

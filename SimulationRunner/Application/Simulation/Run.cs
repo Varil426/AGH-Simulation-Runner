@@ -33,7 +33,7 @@ public class Run
 
             foreach (var parameters in request.Parameters)
             {
-                _dockerContainerManager.RunSimulation(simulation, parameters);
+                _dockerContainerManager.RunSimulationAsync(simulation, parameters);
             }
             
             return Unit.Value;
