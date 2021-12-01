@@ -28,10 +28,10 @@ public class SimulationHandler : ISimulationHandler
             var assembly = LoadSimulationAssembly(assemblyPath);
             var exportedTypes = assembly.ExportedTypes;
 
-            if (exportedTypes.Where(IsValidSimulationClass).Count() == 1)
+            if (exportedTypes.Where(IsValidSimulationClass).Count() != 1)
                 errors.Add($"Missing implementation of {typeof(ISimulation)} or more than 1 implementation.");
 
-            if (exportedTypes.Where(IsValidSimulationBuilderClass).Count() == 1)
+            if (exportedTypes.Where(IsValidSimulationBuilderClass).Count() != 1)
                 errors.Add($"Missing implementation of {typeof(ISimulationBuilder)}, more than 1 implementation or missing parameterless constructor.");
         }
         catch (Exception ex)

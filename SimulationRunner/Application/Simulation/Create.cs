@@ -1,5 +1,5 @@
 ﻿using Application.Interfaces;
-
+using SimulationHandler;
 
 namespace Application.Simulation;
 public class Create
@@ -28,12 +28,14 @@ public class Create
         private readonly DataContext _dataContext;
         private readonly IUserAccessor _userAccessor;
         private readonly IMapper _mapper;
+        private readonly ISimulationHandler _simulationHandler;
 
-        public Handler(DataContext dataContext, IUserAccessor userAccessor, IMapper mapper)
+        public Handler(DataContext dataContext, IUserAccessor userAccessor, IMapper mapper, ISimulationHandler simulationHandler)
         {
             _dataContext = dataContext;
             _userAccessor = userAccessor;
             _mapper = mapper;
+            _simulationHandler = simulationHandler;
         }
 
         public async Task<SimulationDto> Handle(Command request, CancellationToken cancellationToken)
@@ -47,8 +49,8 @@ public class Create
             var filePath = Path.Combine(basePath, request.File.FileName);*/
             var fileType = Path.GetExtension(request.File.FileName).ToLowerInvariant() switch
             {
-                "zip" => Domain.Simulation.AllowedFileTypesEnum.ZIP,
-                "dll" => Domain.Simulation.AllowedFileTypesEnum.DLL,
+                ".zip" => Domain.Simulation.AllowedFileTypesEnum.ZIP,
+                ".dll" => Domain.Simulation.AllowedFileTypesEnum.DLL,
                 _ => Domain.Simulation.AllowedFileTypesEnum.Uknown
             };
 
@@ -57,6 +59,10 @@ public class Create
                 using var stream = new FileStream(filePath, FileMode.Create);
                 await request.File.CopyToAsync(stream);
             }*/
+
+            var validationResults = await ValidateSimulation(request.File, fileType);
+            if (validationResults.Any())
+                throw new RestException(System.Net.HttpStatusCode.BadRequest, new { Simulation = validationResults });
 
             using var memoryStream = new MemoryStream();
             await request.File.CopyToAsync(memoryStream);
@@ -68,6 +74,25 @@ public class Create
             if (await _dataContext.SaveChangesAsync() > 0)
                 return _mapper.Map<SimulationDto>(simulation);
             throw new Exception("Problem saving changes.");
+        }
+
+        private async Task<List<string>> ValidateSimulation(IFormFile simulationFile, Domain.Simulation.AllowedFileTypesEnum fileType)
+        {
+            // Save to temporary file
+            var tempFilePath = Path.GetTempFileName();
+            using var fileStream = new FileStream(tempFilePath, FileMode.Create);
+            await simulationFile.CopyToAsync(fileStream);
+            fileStream.Close();
+            
+            switch (fileType)
+            {
+                case Domain.Simulation.AllowedFileTypesEnum.DLL:
+                    _simulationHandler.CheckSimulationAssembly(tempFilePath, out var errors);
+                    return errors;
+                case Domain.Simulation.AllowedFileTypesEnum.ZIP: // TODO
+                default:
+                    throw new RestException(System.Net.HttpStatusCode.BadRequest, new { Simulation = "File type not allowed" });
+            }
         }
     }
 }
