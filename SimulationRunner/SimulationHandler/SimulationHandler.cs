@@ -33,6 +33,8 @@ public class SimulationHandler : ISimulationHandler
 
             if (exportedTypes.Where(IsValidSimulationBuilderClass).Count() != 1)
                 errors.Add($"Missing implementation of {typeof(ISimulationBuilder)}, more than 1 implementation or missing parameterless constructor.");
+        
+            
         }
         catch (Exception ex)
         {

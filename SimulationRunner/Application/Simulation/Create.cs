@@ -60,34 +60,44 @@ public class Create
                 await request.File.CopyToAsync(stream);
             }*/
 
-            var validationResults = await ValidateSimulation(request.File, fileType);
+            // Save to temporary file
+            var tempFilePath = Path.GetTempFileName();
+            using var fileStream = new FileStream(tempFilePath, FileMode.Create);
+            await request.File.CopyToAsync(fileStream);
+            fileStream.Close();
+
+            var validationResults = ValidateSimulation(tempFilePath, fileType);
             if (validationResults.Any())
                 throw new RestException(System.Net.HttpStatusCode.BadRequest, new { Simulation = validationResults });
+
+            var simulationBuilder = _simulationHandler.CreateSimulationBuilder(tempFilePath);
+            var simulationParamsTemplate = simulationBuilder.CreateSimulationParamsTemplate();
+            var simulationResultsTemplate = simulationBuilder.CreateSimulationResultsTemplate();
 
             using var memoryStream = new MemoryStream();
             await request.File.CopyToAsync(memoryStream);
 
-            // TODO Validate file - extension and content
-
             var simulation = new Domain.Simulation(request.Name, memoryStream.ToArray(), fileType);
+
+            foreach (var param in simulationParamsTemplate)
+                simulation.SimulationParamsTemplate.Add(new Domain.SimulationParamTemplate(param.Key, param.Value.ToString()));
+
+            foreach (var result in simulationResultsTemplate)
+                simulation.SimulationResultsTemplate.Add(new Domain.SimulationResultTemplate(result.Key, result.Value.ToString()));
+
             user.Simulations.Add(simulation);
+
             if (await _dataContext.SaveChangesAsync() > 0)
                 return _mapper.Map<SimulationDto>(simulation);
             throw new Exception("Problem saving changes.");
         }
 
-        private async Task<List<string>> ValidateSimulation(IFormFile simulationFile, Domain.Simulation.AllowedFileTypesEnum fileType)
-        {
-            // Save to temporary file
-            var tempFilePath = Path.GetTempFileName();
-            using var fileStream = new FileStream(tempFilePath, FileMode.Create);
-            await simulationFile.CopyToAsync(fileStream);
-            fileStream.Close();
-            
+        private List<string> ValidateSimulation(string simulationFilePath, Domain.Simulation.AllowedFileTypesEnum fileType)
+        {            
             switch (fileType)
             {
                 case Domain.Simulation.AllowedFileTypesEnum.DLL:
-                    _simulationHandler.CheckSimulationAssembly(tempFilePath, out var errors);
+                    _simulationHandler.CheckSimulationAssembly(simulationFilePath, out var errors);
                     return errors;
                 case Domain.Simulation.AllowedFileTypesEnum.ZIP: // TODO
                 default:
