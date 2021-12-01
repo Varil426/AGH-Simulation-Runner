@@ -28,7 +28,7 @@ public class DockerContainerManager : IDockerContainerManager
 
     public List<ContainerNode> FindUserContainers(User user) => _containers.TryGetValue(user, out var containers) ? containers : new List<ContainerNode>();
 
-    public async void RunSimulationAsync(Simulation simulation, Dictionary<string, JsonElement> parameters)
+    public async Task RunSimulationAsync(Simulation simulation, Dictionary<string, JsonElement> parameters)
     {
         using var dataContext = _serviceScopeFactory.CreateAsyncScope().ServiceProvider.GetService(typeof(DataContext)) as DataContext ?? throw new Exception();
 

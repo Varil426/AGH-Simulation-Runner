@@ -18,13 +18,13 @@ public abstract class SimulationValuesTemplate : ISimulationValuesTemplate
 
         set
         {
-            if (TypesHelper.CheckIfAllowedType(value.GetType()))
+            if (TypesHelper.CheckIfAllowedType(value))
             {
                 _parameterNameToType[name] = value;
             }
             else
             {
-                throw new UnsupportedTypeException { ReceivedType = value.GetType() };
+                throw new UnsupportedTypeException { ReceivedType = value };
             }
         }
     }
