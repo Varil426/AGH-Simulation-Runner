@@ -1,6 +1,7 @@
 ﻿using SimulationStandard;
 using SimulationStandard.Interfaces;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text.Json;
 
 namespace SimulationHandler;
@@ -9,12 +10,17 @@ public class SimulationHandler : ISimulationHandler
 {
     private readonly JsonSerializerOptions _jsonSerializerOptions;
 
+    private readonly AssemblyLoadContext _assemblyLoadContext;
+
+    private bool _disposed;
+
     private bool IsValidSimulationBuilderClass(Type type) => type.IsClass && !type.IsAbstract && type.IsAssignableTo(typeof(ISimulationBuilder)) && type.GetConstructors().Any(constructorInfo => !constructorInfo.GetParameters().Any());
 
     private bool IsValidSimulationClass(Type type) => type.IsClass && !type.IsAbstract && type.IsAssignableTo(typeof(ISimulation));
 
     public SimulationHandler()
     {
+        _assemblyLoadContext = new(null, true);
         _jsonSerializerOptions = new();
         _jsonSerializerOptions.Converters.Add(new JsonConverters.TypeJsonConverter());
     }
@@ -44,7 +50,7 @@ public class SimulationHandler : ISimulationHandler
         return !errors.Any();
     }
 
-    public Assembly LoadSimulationAssembly(string assemblyPath) => Assembly.LoadFrom(assemblyPath) ?? throw new Exception("Assembly load failed");
+    public Assembly LoadSimulationAssembly(string assemblyPath) => _assemblyLoadContext.LoadFromAssemblyPath(assemblyPath) ?? throw new Exception("Assembly load failed");
 
     public ISimulationBuilder CreateSimulationBuilder(string assemblyPath) => CreateSimulationBuilder(LoadSimulationAssembly(assemblyPath));
 
@@ -113,4 +119,26 @@ public class SimulationHandler : ISimulationHandler
     public string ToJson(ISimulationParamsTemplate simulationParamsTemplate) => JsonSerializer.Serialize<IDictionary<string, Type>>(simulationParamsTemplate, _jsonSerializerOptions);
 
     public string ToJson(ISimulationResultsTemplate simulationResultsTemplate) => JsonSerializer.Serialize<IDictionary<string, Type>>(simulationResultsTemplate, _jsonSerializerOptions);
+
+    /// <summary>
+    /// Unloads all loaded assemblies.
+    /// </summary>
+    public void UnloadAllLoadedAssemblies() => _assemblyLoadContext.Unload();
+
+    public virtual void Dispose() => Dispose(true);
+
+    private void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                _assemblyLoadContext.Unload();
+            }
+
+            _disposed = true;
+        }
+    }
+
+    ~SimulationHandler() => Dispose(false);
 }

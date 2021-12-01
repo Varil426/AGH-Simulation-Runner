@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace SimulationHandler;
 
-public interface ISimulationHandler
+public interface ISimulationHandler : IDisposable
 {
     ISimulationResultsTemplate CreateSimulationResultsTemplate(string json);
     ISimulationParamsTemplate CreateSimulationParamsTemplate(string json);
@@ -26,4 +26,6 @@ public interface ISimulationHandler
     ISimulationBuilder CreateSimulationBuilder(string assemblyPath);
 
     Assembly LoadSimulationAssembly(string assemblyPath);
+
+    void UnloadAllLoadedAssemblies();
 }

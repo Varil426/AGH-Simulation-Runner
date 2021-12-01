@@ -65,9 +65,9 @@ builder.Services
     });
 builder.Services.AddAuthorization();
 
+builder.Services.AddTransient<ISimulationHandler, SimulationHandler.SimulationHandler>();
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
-builder.Services.AddSingleton<ISimulationHandler, SimulationHandler.SimulationHandler>();
 builder.Services.AddSingleton<IDockerContainerManager, DockerContainerManager>();
 
 builder.Services.AddMediatR(typeof(Application.User.UserDto).Assembly);
