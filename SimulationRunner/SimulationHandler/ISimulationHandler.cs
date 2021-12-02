@@ -5,6 +5,13 @@ namespace SimulationHandler;
 
 public interface ISimulationHandler : IDisposable
 {
+    static string SimulationFileFileName => "simulation";
+    static string SimulationParametersFileName => "parameters";
+    static string SimulationResultsFileName => "results";
+    static string SimulationParametersTemplateFileName => "parametersTemplate";
+    static string SimulationResultsTemplateFileName => "resultsTemplate";
+    static string JsonFileExtension => "json";
+
     ISimulationResultsTemplate CreateSimulationResultsTemplate(string json);
     ISimulationParamsTemplate CreateSimulationParamsTemplate(string json);
     ISimulationParams CreateSimulationParams(string json, ISimulationParamsTemplate simulationParamsTemplate);
