@@ -28,4 +28,12 @@
     <ProjectReference Include="..\Application\Application.csproj" />
   </ItemGroup>
 
+	<!--
+  <Target Name="CopySimulationRunnerService" AfterTargets="Build">
+    <ItemGroup>
+	  <_CopyItems Include="$(SolutionDir)SimulationRunnerService\**\*.*" />
+	</ItemGroup>
+  	<Copy SourceFiles="@(_CopyItems)" DestinationFolder="$(OutputPath)\SimulationRunnerService\%(RecursiveDir)"/>
+  </Target>
+    -->
 </Project>

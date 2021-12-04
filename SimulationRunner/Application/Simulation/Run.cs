@@ -14,13 +14,11 @@ public class Run
     public class Handler : IRequestHandler<Command>
     {
         private readonly DataContext _dataContext;
-        private readonly IUserAccessor _userAccessor;
         private readonly IDockerContainerManager _dockerContainerManager;
 
-        public Handler(DataContext dataContext, IUserAccessor userAccessor, IDockerContainerManager dockerContainerManager)
+        public Handler(DataContext dataContext, IDockerContainerManager dockerContainerManager)
         {
             _dataContext = dataContext;
-            _userAccessor = userAccessor;
             _dockerContainerManager = dockerContainerManager;
         }
 
@@ -33,7 +31,7 @@ public class Run
 
             foreach (var parameters in request.Parameters)
             {
-                _dockerContainerManager.RunSimulationAsync(simulation, parameters);
+                _ = _dockerContainerManager.RunSimulationAsync(simulation, parameters);
             }
             
             return Unit.Value;

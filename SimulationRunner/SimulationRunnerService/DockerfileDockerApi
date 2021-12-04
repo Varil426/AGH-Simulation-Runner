@@ -1,5 +1,6 @@
 #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
+#Modified version of docker file. To be run by Docker API.
 FROM mcr.microsoft.com/dotnet/runtime:6.0 AS base
 WORKDIR /app
 
@@ -9,6 +10,7 @@ COPY ["SimulationRunnerService.csproj", "SimulationRunnerService/"]
 RUN dotnet restore "SimulationRunnerService/SimulationRunnerService.csproj"
 WORKDIR "/src/SimulationRunnerService"
 COPY . .
+#RUN dotnet restore "SimulationRunnerService.csproj"
 RUN dotnet build "SimulationRunnerService.csproj" -c Release -o /app/build
 
 FROM build AS publish

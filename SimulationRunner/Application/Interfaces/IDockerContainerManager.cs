@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace Application.Interfaces;
 
-public interface IDockerContainerManager
+public interface IDockerContainerManager : IDisposable
 {
     public IReadOnlyDictionary<Domain.User, List<ContainerNode>> UsersContainers { get; }
 

@@ -5,10 +5,10 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["SimulationRunnerService.csproj", "SimulationRunnerService/"]
+COPY ["SimulationRunnerService/SimulationRunnerService.csproj", "SimulationRunnerService/"]
 RUN dotnet restore "SimulationRunnerService/SimulationRunnerService.csproj"
-WORKDIR "/src/SimulationRunnerService"
 COPY . .
+WORKDIR "/src/SimulationRunnerService"
 RUN dotnet build "SimulationRunnerService.csproj" -c Release -o /app/build
 
 FROM build AS publish
