@@ -14,6 +14,8 @@ namespace Application.Docker;
 
 public class DockerContainerManager : IDockerContainerManager
 {
+    private const string CONTAINTER_DATA_DIRECTORY_PATH = "/data";
+
     private readonly Dictionary<Domain.User, List<ContainerNode>> _containers = new();
 
     private bool _disposed;
@@ -80,7 +82,6 @@ public class DockerContainerManager : IDockerContainerManager
         var containerId = await CreateNewContainer(containerDataPath, simulationRunAttempt.Id.ToString());
         await RunContainer(containerId);
 
-        // TODO Implement runner
         // TODO Implement background task watching over conteiners -> store results
 
         await dataContext.SaveChangesAsync();
@@ -101,9 +102,10 @@ public class DockerContainerManager : IDockerContainerManager
             HostConfig = new() { Mounts = new List<Mount>() },
             //Entrypoint = new List<string> { "dotnet", "SimulationRunnerService.dll" }
             StopTimeout = TimeSpan.FromMinutes(30), // TODO Change
+            Env = new List<string> { $"SIMULATION_RUNNER_SERVICE_DATA_PATH={CONTAINTER_DATA_DIRECTORY_PATH}" }
         };
 
-        parameters.HostConfig.Mounts.Add(new Mount { Source = containerDataPath, Target = "/data", Type = "bind"});
+        parameters.HostConfig.Mounts.Add(new Mount { Source = containerDataPath, Target = CONTAINTER_DATA_DIRECTORY_PATH, Type = "bind"});
 
         var result = await _dockerClient.Containers.CreateContainerAsync(parameters);
         return result.ID;
