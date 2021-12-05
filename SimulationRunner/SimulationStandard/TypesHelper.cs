@@ -35,7 +35,6 @@ public static class TypesHelper
     /// </summary>
     public static IReadOnlySet<Type> AllowedTypes { get; }
 
-
     /// <summary>
     /// Checks whether this type of parameter is allowed.
     /// </summary>

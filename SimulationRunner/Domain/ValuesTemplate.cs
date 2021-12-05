@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using SimulationStandard;
+using System.Collections;
 
 namespace Domain;
 
@@ -20,5 +21,7 @@ public abstract class ValuesTemplate
 
     public string Type { get; set; }
 
-    // TODO Add computed property Type TypeAsType, bool IsCollection
+    public Type TypeAsType => TypesHelper.AllowedTypes.FirstOrDefault(x => x.ToString() == Type) ?? throw new Exception("Disallowed Type");
+
+    public bool IsCollection => TypeAsType is IEnumerable;
 }
