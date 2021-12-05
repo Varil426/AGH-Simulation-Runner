@@ -5,10 +5,18 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["SimulationRunnerService.csproj", "SimulationRunnerService/"]
+COPY ["SimulationRunnerService/SimulationRunnerService.csproj", "SimulationRunnerService/"]
+COPY ["SimulationHandler/SimulationHandler.csproj", "SimulationHandler/"]
+COPY ["SimulationStandard/SimulationStandard.csproj", "SimulationStandard/"]
 RUN dotnet restore "SimulationRunnerService/SimulationRunnerService.csproj"
+RUN dotnet restore "SimulationHandler/SimulationHandler.csproj"
+RUN dotnet restore "SimulationStandard/SimulationStandard.csproj"
+WORKDIR "/src/SimulationHandler"
+COPY SimulationHandler .
+WORKDIR "/src/SimulationStandard"
+COPY SimulationStandard .
 WORKDIR "/src/SimulationRunnerService"
-COPY . .
+COPY SimulationRunnerService .
 RUN dotnet build "SimulationRunnerService.csproj" -c Release -o /app/build
 
 FROM build AS publish
