@@ -20,7 +20,7 @@ public class DockerContainerManager : IDockerContainerManager
 
     private readonly DockerClient _dockerClient;
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    //private readonly ISimulationHandler _simulationHandler;
+    private readonly ISimulationHandler _simulationHandler;
     //private readonly IConfiguration _configuration;
     private readonly string _containersDirectoriesRootPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!, "containers");
     //private readonly string _simulationRunnerServicePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!, "SimulationRunnerService");
@@ -28,10 +28,10 @@ public class DockerContainerManager : IDockerContainerManager
     //private readonly string _dockerRepository = "simulationrunnerservice";
     private readonly string _dockerImageId;
 
-    public DockerContainerManager(IServiceScopeFactory serviceScopeFactory, IConfiguration configuration)
+    public DockerContainerManager(IServiceScopeFactory serviceScopeFactory, ISimulationHandler simulationHandler, IConfiguration configuration)
     {
         _serviceScopeFactory = serviceScopeFactory;
-        //_simulationHandler = simulationHandler;
+        _simulationHandler = simulationHandler;
         //_configuration = configuration;
         // TODO Get URI form configuration if need be
         _dockerClient = new DockerClientConfiguration().CreateClient();
@@ -129,6 +129,8 @@ public class DockerContainerManager : IDockerContainerManager
 
     private async Task PrepareSimulationFiles(string directoryPath, Domain.Simulation simulation, Dictionary<string, JsonElement> parameters)
     {
+        // TODO Add factories
+
         // Place simulation file
         var simulationFilePath = Path.ChangeExtension(Path.Combine(directoryPath, ISimulationHandler.SimulationFileFileName), simulation.FileType.ToString().ToLower());
         using var simulationFileFileStream = new FileStream(simulationFilePath, FileMode.OpenOrCreate);
@@ -138,19 +140,28 @@ public class DockerContainerManager : IDockerContainerManager
         var simulationParametersTemplatePath = Path.ChangeExtension(Path.Combine(directoryPath, ISimulationHandler.SimulationParametersTemplateFileName), ISimulationHandler.JsonFileExtension);
         using var simulationParamsTemplateFileStream = new FileStream(simulationParametersTemplatePath, FileMode.OpenOrCreate);
         using var simulationParamsTemplateStreamWriter = new StreamWriter(simulationParamsTemplateFileStream);
-        var parametersTemplateTask = simulationParamsTemplateStreamWriter.WriteAsync(JsonSerializer.Serialize(simulation.SimulationParamsTemplate.ToDictionary(x => x.Name, x => x.Type)));
+        var simulationParamsTemplate = new SimulationStandard.SimulationParamsTemplate();
+        foreach (var param in simulation.SimulationParamsTemplate)
+            simulationParamsTemplate[param.Name] = param.TypeAsType;
+        var parametersTemplateTask = simulationParamsTemplateStreamWriter.WriteAsync(_simulationHandler.ToJson(simulationParamsTemplate));
 
         // Place results template
         var simulationResultsTemplatePath = Path.ChangeExtension(Path.Combine(directoryPath, ISimulationHandler.SimulationResultsTemplateFileName), ISimulationHandler.JsonFileExtension);
         using var simulationResultsTemplateFileStream = new FileStream(simulationResultsTemplatePath, FileMode.OpenOrCreate);
         using var simulationResultsTemplateStreamWriter = new StreamWriter(simulationResultsTemplateFileStream);
-        var resultsTemplateTask = simulationResultsTemplateStreamWriter.WriteAsync(JsonSerializer.Serialize(simulation.SimulationResultsTemplate.ToDictionary(x => x.Name, x => x.Type)));
+        var simulationResultsTemplate = new SimulationStandard.SimulationResultsTemplate();
+        foreach (var param in simulation.SimulationResultsTemplate)
+            simulationResultsTemplate[param.Name] = param.TypeAsType;
+        var resultsTemplateTask = simulationResultsTemplateStreamWriter.WriteAsync(_simulationHandler.ToJson(simulationResultsTemplate));
 
         // Place parameters
         var simulationParametersPath = Path.ChangeExtension(Path.Combine(directoryPath, ISimulationHandler.SimulationParametersFileName), ISimulationHandler.JsonFileExtension);
         using var simulationParametersFileStream = new FileStream(simulationParametersPath, FileMode.OpenOrCreate);
         using var simulationParamsStreamWriter = new StreamWriter(simulationParametersFileStream);
-        var parametersTask = simulationParamsStreamWriter.WriteAsync(JsonSerializer.Serialize(parameters));
+        var simulationParams = new SimulationStandard.SimulationParams();
+        foreach (var (name, element) in parameters)
+            simulationParams.Params[name] = JsonSerializer.Deserialize(element, simulationParamsTemplate[name]) ?? throw new Exception("JSON Deserialization failed");
+        var parametersTask = simulationParamsStreamWriter.WriteAsync(_simulationHandler.ToJson(simulationParams));
 
         // Await tasks
         await simulationFileTask;

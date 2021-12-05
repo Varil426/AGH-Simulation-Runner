@@ -56,69 +56,21 @@ public class SimulationHandler : ISimulationHandler
 
     public ISimulationBuilder CreateSimulationBuilder(Assembly assembly) => (Activator.CreateInstance(assembly.ExportedTypes.FirstOrDefault(IsValidSimulationBuilderClass) ?? throw new Exception()) as ISimulationBuilder)!;
 
-    public ISimulationParams CreateSimulationParams(string json, ISimulationParamsTemplate simulationParamsTemplate)
-    {
-        var deserializedJson = JsonSerializer.Deserialize<Dictionary<string, object>>(json) ?? throw new ArgumentException("Invalid JSON");
-        var simulationParams = new SimulationParams();
+    public ISimulationParams CreateSimulationParams(string json, ISimulationParamsTemplate simulationParamsTemplate) => JsonSerializer.Deserialize<ISimulationParams>(json, _jsonSerializerOptions) ?? throw new ArgumentException("Invalid JSON");
 
-        foreach (var (key, value) in deserializedJson)
-        {
-            simulationParams.Params[key] = Convert.ChangeType(value, simulationParamsTemplate[key]);
-        }
+    public ISimulationParamsTemplate CreateSimulationParamsTemplate(string json) => JsonSerializer.Deserialize<ISimulationParamsTemplate>(json, _jsonSerializerOptions) ?? throw new ArgumentException("Invalid JSON");
 
-        return simulationParams;
-    }
+    public ISimulationResults CreateSimulationResults(string json, ISimulationResultsTemplate simulationResultsTemplate) => JsonSerializer.Deserialize<ISimulationResults>(json, _jsonSerializerOptions) ?? throw new ArgumentException("Invalid JSON");
 
-    public ISimulationParamsTemplate CreateSimulationParamsTemplate(string json)
-    {
-        var deserializedJson = JsonSerializer.Deserialize<Dictionary<string, string>>(json) ?? throw new ArgumentException("Invalid JSON");
-        var simulationParamsTemplate = new SimulationParamsTemplate();
+    public ISimulationResultsTemplate CreateSimulationResultsTemplate(string json) => JsonSerializer.Deserialize<ISimulationResultsTemplate>(json, _jsonSerializerOptions) ?? throw new ArgumentException("Invalid JSON");
 
-        foreach (var (key, value) in deserializedJson)
-        {
-            var type = GetTypeFromString(value) ?? throw new Exception("Invalid data type");
-            simulationParamsTemplate[key] = type;
-        }
+    public string ToJson(ISimulationParams simulationParams) => JsonSerializer.Serialize(simulationParams, _jsonSerializerOptions);
 
-        return simulationParamsTemplate;
-    }
+    public string ToJson(ISimulationResults simulationResults) => JsonSerializer.Serialize(simulationResults, _jsonSerializerOptions);
 
-    public ISimulationResults CreateSimulationResults(string json, ISimulationResultsTemplate simulationResultsTemplate)
-    {
-        var deserializedJson = JsonSerializer.Deserialize<Dictionary<string, object>>(json) ?? throw new ArgumentException("Invalid JSON");
-        var simulationResults = new SimulationResults();
+    public string ToJson(ISimulationParamsTemplate simulationParamsTemplate) => JsonSerializer.Serialize(simulationParamsTemplate, _jsonSerializerOptions);
 
-        foreach (var (key, value) in deserializedJson)
-        {
-            simulationResults.Results[key] = Convert.ChangeType(value, simulationResultsTemplate[key]);
-        }
-
-        return simulationResults;
-    }
-
-    public ISimulationResultsTemplate CreateSimulationResultsTemplate(string json)
-    {
-        var deserializedJson = JsonSerializer.Deserialize<Dictionary<string, string>>(json) ?? throw new ArgumentException("Invalid JSON");
-        var simulationResultsTemplate = new SimulationResultsTemplate();
-
-        foreach (var (key, value) in deserializedJson)
-        {
-            var type = GetTypeFromString(value) ?? throw new Exception("Invalid data type");
-            simulationResultsTemplate[key] = type;
-        }
-
-        return simulationResultsTemplate;
-    }
-
-    private Type? GetTypeFromString(string value) => TypesHelper.AllowedTypes.FirstOrDefault(x => x.Name == value);
-
-    public string ToJson(ISimulationParams simulationParams) => JsonSerializer.Serialize<IDictionary<string, object>>(simulationParams.Params);
-
-    public string ToJson(ISimulationResults simulationResults) => JsonSerializer.Serialize<IDictionary<string, object>>(simulationResults.Results);
-
-    public string ToJson(ISimulationParamsTemplate simulationParamsTemplate) => JsonSerializer.Serialize<IDictionary<string, Type>>(simulationParamsTemplate, _jsonSerializerOptions);
-
-    public string ToJson(ISimulationResultsTemplate simulationResultsTemplate) => JsonSerializer.Serialize<IDictionary<string, Type>>(simulationResultsTemplate, _jsonSerializerOptions);
+    public string ToJson(ISimulationResultsTemplate simulationResultsTemplate) => JsonSerializer.Serialize(simulationResultsTemplate, _jsonSerializerOptions);
 
     /// <summary>
     /// Unloads all loaded assemblies.
