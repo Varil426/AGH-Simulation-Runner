@@ -14,8 +14,8 @@ public interface ISimulationHandler : IDisposable
 
     ISimulationResultsTemplate CreateSimulationResultsTemplate(string json);
     ISimulationParamsTemplate CreateSimulationParamsTemplate(string json);
-    ISimulationParams CreateSimulationParams(string json, ISimulationParamsTemplate simulationParamsTemplate);
-    ISimulationResults CreateSimulationResults(string json, ISimulationResultsTemplate simulationResultsTemplate);
+    ISimulationParams CreateSimulationParams(string json);
+    ISimulationResults CreateSimulationResults(string json);
     string ToJson(ISimulationParams simulationParams);
     string ToJson(ISimulationResults simulationResults);
     string ToJson(ISimulationParamsTemplate simulationParamsTemplate);
