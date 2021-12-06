@@ -83,6 +83,7 @@ public class DockerContainerManager : IDockerContainerManager
         await RunContainer(containerId);
 
         // TODO Implement background task watching over conteiners -> store results
+        // TODO Service Error -> Save Error in DB
 
         await dataContext.SaveChangesAsync();
     }
@@ -176,8 +177,8 @@ public class DockerContainerManager : IDockerContainerManager
 
     public void Dispose()
     {
-        if (!_disposed)
-            Dispose(true);
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
     private void Dispose(bool disposing)

@@ -96,7 +96,11 @@ public class SimulationHandler : ISimulationHandler
     /// </summary>
     public void UnloadAllLoadedAssemblies() => _assemblyLoadContext.Unload();
     
-    public virtual void Dispose() => Dispose(true);
+    public virtual void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
     private JsonReader CreateJsonReader(string json) => new JsonTextReader(new StringReader(json));
 
@@ -113,9 +117,9 @@ public class SimulationHandler : ISimulationHandler
         {
             if (disposing)
             {
-                _assemblyLoadContext.Unload();
             }
 
+            _assemblyLoadContext.Unload();
             _disposed = true;
         }
     }
