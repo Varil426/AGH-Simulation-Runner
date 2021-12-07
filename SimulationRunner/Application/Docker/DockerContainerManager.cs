@@ -40,7 +40,7 @@ public class DockerContainerManager : IDockerContainerManager
 
         _dockerClient.DefaultTimeout = TimeSpan.FromSeconds(30);
 
-        _dockerImageId = configuration.GetValue<string>("SimulationRunnerServiceDockerImageId");
+        _dockerImageId = configuration.GetValue<string>("SimulationRunnerServiceDockerImage");
 
         // TODO Dynamic Docker Image Creation
         /*
