@@ -25,5 +25,7 @@ public interface IDockerContainerManager : IDisposable
 
     public Task<IReadOnlyDictionary<SimulationRunAttempt, ContainerListResponse>> GetAllUserContainersStatsPerRunAttempt();
 
+    public string GetContainerDataPath(string containerName);
+
     // TODO Rest
 }

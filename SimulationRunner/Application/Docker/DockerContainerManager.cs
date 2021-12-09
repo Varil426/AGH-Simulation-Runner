@@ -78,12 +78,13 @@ public class DockerContainerManager : IDockerContainerManager
         simulationRunAttempt.Start = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);*/
 
         dataContext.RunAttempts.Add(simulationRunAttempt);
-        simulation.SimulationRunAttempts.Add(simulationRunAttempt); // TODO Działa ale, zastanwić się czy tu powinien być data context robiony czy przekazywany. Na 100% powinienm być przekazywany
+        simulation.SimulationRunAttempts.Add(simulationRunAttempt);
 
-        var containerDataPath = CreateContainerFileStructure(simulationRunAttempt.Id.ToString());
+        var containerName = simulationRunAttempt.Id.ToString();
+        var containerDataPath = CreateContainerFileStructure(containerName);
         await PrepareSimulationFiles(containerDataPath, simulation, parameters);
 
-        var containerId = await CreateNewContainer(containerDataPath, simulationRunAttempt.Id.ToString());
+        var containerId = await CreateNewContainer(GetContainerDataPath(containerName), containerName);
         AddUserContainer(simulation.User, containerId, simulationRunAttempt);
         await RunContainer(containerId);
         await dataContext.SaveChangesAsync();
@@ -103,12 +104,12 @@ public class DockerContainerManager : IDockerContainerManager
     /// </summary>
     /// <param name="containerDataPath">Path to container data.</param>
     /// <returns>Returns container ID.</returns>
-    private async Task<string> CreateNewContainer(string containerDataPath, string? name = null)
+    private async Task<string> CreateNewContainer(string containerDataPath, string name)
     {
         var parameters = new CreateContainerParameters
         {
             Image = _dockerImageId,
-            Name = name ?? string.Empty,
+            Name = name,
             NetworkDisabled = true,
             HostConfig = new() { Mounts = new List<Mount>() },
             //Entrypoint = new List<string> { "dotnet", "SimulationRunnerService.dll" }
@@ -129,14 +130,14 @@ public class DockerContainerManager : IDockerContainerManager
     /// <summary>
     /// Creates directory structure for new container.
     /// </summary>
-    /// <param name="containerId">Conatiner ID.</param>
+    /// <param name="containerName">Conatiner ID.</param>
     /// <returns>Path to container directory.</returns>
-    private string CreateContainerFileStructure(string containerId)
+    private string CreateContainerFileStructure(string containerName)
     {
         if (!Directory.Exists(_containersDirectoriesRootPath))
             Directory.CreateDirectory(_containersDirectoriesRootPath);
 
-        var containerDirectoryPath = Path.Combine(_containersDirectoriesRootPath, containerId);
+        var containerDirectoryPath = GetContainerDataPath(containerName);
         Directory.CreateDirectory(containerDirectoryPath);
 
         return containerDirectoryPath;
@@ -231,6 +232,8 @@ public class DockerContainerManager : IDockerContainerManager
             x => x.ID, 
             (containerMetaData, containerStats) => (RunAttempt: containerMetaData.RunAttempt, ContainerStats: containerStats))
         .ToDictionary(x => x.RunAttempt, x => x.ContainerStats);
+
+    public string GetContainerDataPath(string containerName) => Path.Combine(_containersDirectoriesRootPath, containerName);
 
     ~DockerContainerManager() => Dispose(false);
 }
