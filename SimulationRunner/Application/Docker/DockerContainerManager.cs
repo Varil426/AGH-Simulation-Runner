@@ -6,7 +6,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimulationHandler;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Reflection;
 using System.Text.Json;
 
@@ -16,7 +15,7 @@ public class DockerContainerManager : IDockerContainerManager
 {
     private const string CONTAINTER_DATA_DIRECTORY_PATH = "/data";
 
-    private readonly Dictionary<Domain.User, List<ContainerNode>> _containers = new();
+    private readonly Dictionary<Domain.User, List<(string ContainerId, SimulationRunAttempt RunAttempt)>> _containers = new();
 
     private bool _disposed;
 
@@ -65,28 +64,39 @@ public class DockerContainerManager : IDockerContainerManager
         */
     }
 
-    public IReadOnlyDictionary<Domain.User, List<ContainerNode>> UsersContainers => new ReadOnlyDictionary<Domain.User, List<ContainerNode>>(_containers);
+    public IReadOnlyDictionary<Domain.User, List<(string ContainerId, SimulationRunAttempt RunAttempt)>> UsersContainers => new ReadOnlyDictionary<Domain.User, List<(string, SimulationRunAttempt)>>(_containers);
 
-    public List<ContainerNode> FindUserContainers(Domain.User user) => _containers.TryGetValue(user, out var containers) ? containers : new List<ContainerNode>();
+    public HashSet<string> FindUserContainers(Domain.User user) => new(_containers.TryGetValue(user, out var containers) ? containers.Select(x => x.ContainerId) : Enumerable.Empty<string>());
 
-    public async Task RunSimulationAsync(Domain.Simulation simulation, Dictionary<string, JsonElement> parameters)
+    public async Task RunSimulationAsync(Domain.Simulation simulation, DataContext dataContext,  Dictionary<string, JsonElement> parameters)
     {
-        using var dataContext = _serviceScopeFactory.CreateAsyncScope().ServiceProvider.GetService(typeof(DataContext)) as DataContext ?? throw new Exception();
+        var simulationRunAttempt = new SimulationRunAttempt { Simulation = simulation, AttemptNumer = simulation.SimulationRunAttempts.Count + 1, Id = Guid.NewGuid(), Start = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc) }; // dataContext.CreateProxy<SimulationRunAttempt>() 
+        /*var simulationRunAttempt = dataContext.CreateProxy<SimulationRunAttempt>();
+        simulationRunAttempt.Simulation = simulation;
+        simulationRunAttempt.AttemptNumer = simulation.SimulationRunAttempts.Count + 1;
+        simulationRunAttempt.Id = Guid.NewGuid();
+        simulationRunAttempt.Start = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);*/
 
-        var simulationRunAttempt = new SimulationRunAttempt { Simulation = simulation, AttemptNumer = simulation.SimulationRunAttempts.Count + 1, Id = Guid.NewGuid(), Start = DateTime.Now };
-        simulation.SimulationRunAttempts.Add(simulationRunAttempt);
+        dataContext.RunAttempts.Add(simulationRunAttempt);
+        simulation.SimulationRunAttempts.Add(simulationRunAttempt); // TODO Działa ale, zastanwić się czy tu powinien być data context robiony czy przekazywany. Na 100% powinienm być przekazywany
 
         var containerDataPath = CreateContainerFileStructure(simulationRunAttempt.Id.ToString());
         await PrepareSimulationFiles(containerDataPath, simulation, parameters);
 
         var containerId = await CreateNewContainer(containerDataPath, simulationRunAttempt.Id.ToString());
+        AddUserContainer(simulation.User, containerId, simulationRunAttempt);
         await RunContainer(containerId);
-
-        // TODO Implement background task watching over conteiners -> store results
-        // TODO Service Error -> Save Error in DB
-
         await dataContext.SaveChangesAsync();
     }
+
+    public async Task RunSimulationAsync(Guid simulationId, Dictionary<string, JsonElement> parameters)
+    {
+        using var dataContext =  CreateDataContext();
+        var simulation = await dataContext.Simulations.FindAsync(simulationId) ?? throw new Exception("Simulation not found");
+
+        await RunSimulationAsync(simulation, dataContext, parameters);
+    }
+
 
     /// <summary>
     /// Creates new container.
@@ -113,6 +123,8 @@ public class DockerContainerManager : IDockerContainerManager
     }
 
     private async Task RunContainer(string containerId) => await _dockerClient.Containers.StartContainerAsync(containerId, new ContainerStartParameters());
+
+    private DataContext CreateDataContext() => _serviceScopeFactory.CreateAsyncScope().ServiceProvider.GetService(typeof(DataContext)) as DataContext ?? throw new Exception();
 
     /// <summary>
     /// Creates directory structure for new container.
@@ -175,6 +187,13 @@ public class DockerContainerManager : IDockerContainerManager
         // Close streams - automatically closed in Dispose
     }
 
+    private void AddUserContainer(Domain.User user, string containerId, SimulationRunAttempt simulationRunAttempt)
+    {
+        if (_containers.ContainsKey(user) && _containers[user] != null)
+            _containers[user].Add((containerId, simulationRunAttempt));
+        else
+            _containers[user] = new() { (containerId, simulationRunAttempt) };
+    }
     public void Dispose()
     {
         Dispose(true);
@@ -193,5 +212,25 @@ public class DockerContainerManager : IDockerContainerManager
             _disposed = true;
         }
     }
+
+    public Domain.User? GetContainerOwner(string containerId) => _containers.FirstOrDefault(x => x.Value.Select(x => x.ContainerId).Contains(containerId)).Key;
+
+    public async Task<IReadOnlyCollection<ContainerListResponse>> GetAllUserContainersStats(Domain.User user) => new ReadOnlyCollection<ContainerListResponse>
+        ((await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }))
+        .Where(x => _containers[user].Any(y => y.ContainerId == x.ID)).ToList());
+
+    public async Task<IReadOnlyCollection<ContainerListResponse>> GetAllUserContainersStats() => new ReadOnlyCollection<ContainerListResponse>
+        ((await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters { All = true }))
+        .Where(x => _containers.Values.SelectMany(y => y.Select(z => z.ContainerId)).Contains(x.ID)).ToList());
+
+    public async Task<IReadOnlyDictionary<SimulationRunAttempt, ContainerListResponse>> GetAllUserContainersStatsPerRunAttempt()
+        => _containers.Values.SelectMany(x => x)
+        .Join(
+            await GetAllUserContainersStats(),
+            x => x.ContainerId, 
+            x => x.ID, 
+            (containerMetaData, containerStats) => (RunAttempt: containerMetaData.RunAttempt, ContainerStats: containerStats))
+        .ToDictionary(x => x.RunAttempt, x => x.ContainerStats);
+
     ~DockerContainerManager() => Dispose(false);
 }

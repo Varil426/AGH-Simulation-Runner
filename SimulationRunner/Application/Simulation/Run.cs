@@ -31,9 +31,10 @@ public class Run
 
             foreach (var parameters in request.Parameters)
             {
-                _ = _dockerContainerManager.RunSimulationAsync(simulation, parameters);
+                await _dockerContainerManager.RunSimulationAsync(simulation, _dataContext, parameters);
             }
-            
+
+            //await _dataContext.SaveChangesAsync();
             return Unit.Value;
         }
     }
