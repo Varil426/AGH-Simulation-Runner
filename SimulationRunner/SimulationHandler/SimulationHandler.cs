@@ -56,7 +56,11 @@ public class SimulationHandler : ISimulationHandler
         return !errors.Any();
     }
 
-    public Assembly LoadSimulationAssembly(string assemblyPath) => _assemblyLoadContext.LoadFromAssemblyPath(assemblyPath) ?? throw new Exception("Assembly load failed");
+    public Assembly LoadSimulationAssembly(string assemblyPath)
+    {
+        using var fileStream = new FileStream(assemblyPath, FileMode.Open);
+        return _assemblyLoadContext.LoadFromStream(fileStream) ?? throw new Exception("Assembly load failed");
+    }
 
     public ISimulationBuilder CreateSimulationBuilder(string assemblyPath) => CreateSimulationBuilder(LoadSimulationAssembly(assemblyPath));
 
@@ -102,7 +106,7 @@ public class SimulationHandler : ISimulationHandler
         GC.SuppressFinalize(this);
     }
 
-    private JsonReader CreateJsonReader(string json) => new JsonTextReader(new StringReader(json));
+    private static JsonReader CreateJsonReader(string json) => new JsonTextReader(new StringReader(json));
 
     private string SerializeObject(object @object)
     {
