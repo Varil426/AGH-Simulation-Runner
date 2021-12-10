@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Application.Docker;
 using SimulationHandler;
+using BackendAPI.Security.Policies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,7 +64,11 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"])) // TODO Add secret
         };
     });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(nameof(IsOwnerRequirement), policy => policy.Requirements.Add(new IsOwnerRequirement()));
+});
+builder.Services.AddScoped<IAuthorizationHandler, IsOwnerRequirementHandler>();
 
 builder.Services.AddTransient<ISimulationHandler, SimulationHandler.SimulationHandler>();
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();

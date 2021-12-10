@@ -39,7 +39,6 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
         RemoveDockerContainers(results.Select(x => x.Value.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing container name.")));
 
         // TODO Get container error and store it in DB
-        // TODO Policy - owner of a simulation
         // TODO Endpoints
         // TODO Fix and test Docker Compose
         // TODO ZIP Handling
