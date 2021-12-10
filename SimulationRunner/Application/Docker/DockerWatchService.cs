@@ -62,6 +62,9 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
         // Entity Framework doesn't support parallel usage of the same DbContext, therefore we should create new context for each parallel operation.
         using var dataContext = _serviceScopeFactory.CreateAsyncScope().ServiceProvider.GetService(typeof(DataContext)) as DataContext ?? throw new Exception();
         var runAttempt = await dataContext.RunAttempts.FirstOrDefaultAsync(x => x.Id == runAttemptId) ?? throw new Exception("Run Attempt not found.");
+
+        runAttempt.End = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc); // TODO Improve
+
         var containerDataPath = _dockerContainerManager.GetContainerDataPath(containerResponse.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing Container Name"));
         var resultsFilePath = Path.ChangeExtension(Path.Combine(containerDataPath, ISimulationHandler.SimulationResultsFileName), ISimulationHandler.JsonFileExtension);
         try

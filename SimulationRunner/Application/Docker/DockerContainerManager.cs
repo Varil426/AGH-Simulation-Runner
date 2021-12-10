@@ -70,7 +70,7 @@ public class DockerContainerManager : IDockerContainerManager
 
     public async Task RunSimulationAsync(Domain.Simulation simulation, DataContext dataContext,  Dictionary<string, JsonElement> parameters)
     {
-        var simulationRunAttempt = new SimulationRunAttempt { Simulation = simulation, AttemptNumer = simulation.SimulationRunAttempts.Count + 1, Id = Guid.NewGuid(), Start = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc) }; // dataContext.CreateProxy<SimulationRunAttempt>() 
+        var simulationRunAttempt = new SimulationRunAttempt { Simulation = simulation, AttemptNumer = simulation.SimulationRunAttempts.Count + 1, Id = Guid.NewGuid(), Start = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc) /* TODO Improve */ }; // dataContext.CreateProxy<SimulationRunAttempt>() 
         /*var simulationRunAttempt = dataContext.CreateProxy<SimulationRunAttempt>();
         simulationRunAttempt.Simulation = simulation;
         simulationRunAttempt.AttemptNumer = simulation.SimulationRunAttempts.Count + 1;
