@@ -15,9 +15,9 @@ public interface IDockerContainerManager : IDisposable
 
     public Domain.User? GetContainerOwner(string containerId);
 
-    public Task RunSimulationAsync(Domain.Simulation simulation, DataContext dataContext, Dictionary<string, JsonElement> parameters);
+    public Task<SimulationRunAttempt> RunSimulationAsync(Domain.Simulation simulation, DataContext dataContext, Dictionary<string, JsonElement> parameters);
 
-    public Task RunSimulationAsync(Guid simulationId, Dictionary<string, JsonElement> parameters);
+    public Task<SimulationRunAttempt> RunSimulationAsync(Guid simulationId, Dictionary<string, JsonElement> parameters);
 
     public Task<IReadOnlyCollection<ContainerListResponse>> GetAllUserContainersStats(Domain.User user);
 
