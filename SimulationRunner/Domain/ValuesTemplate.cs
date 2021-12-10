@@ -23,5 +23,5 @@ public abstract class ValuesTemplate
 
     public Type TypeAsType => TypesHelper.AllowedTypes.FirstOrDefault(x => x.ToString() == Type) ?? throw new Exception("Disallowed Type");
 
-    public bool IsCollection => TypeAsType is IEnumerable;
+    public bool IsCollection => TypeAsType.IsGenericType && TypeAsType.GetGenericTypeDefinition() == typeof(IList<>);
 }
