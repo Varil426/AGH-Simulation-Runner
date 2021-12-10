@@ -235,5 +235,23 @@ public class DockerContainerManager : IDockerContainerManager
 
     public string GetContainerDataPath(string containerName) => Path.Combine(_containersDirectoriesRootPath, containerName);
 
+    public async Task RemoveContainer(string containerName)
+    {
+        var containerId = _containers.Values.SelectMany(x => x).FirstOrDefault(x => x.RunAttempt.Id.ToString() == containerName).ContainerId ?? throw new Exception("Container not found");
+        await _dockerClient.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters());
+    }
+
+    public async Task CleanAfterContainer(string containerName)
+    {
+        var containerDirectoryPath = GetContainerDataPath(containerName);
+        await Task.Run(() => Directory.Delete(containerDirectoryPath, true));
+    }
+
+    public async Task CleanAndRemoveContainer(string containerName)
+    {
+        await RemoveContainer(containerName);
+        await CleanAfterContainer(containerName);
+    }
+
     ~DockerContainerManager() => Dispose(false);
 }

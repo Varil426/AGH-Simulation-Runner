@@ -36,14 +36,25 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
         var test = (await _dockerContainerManager.GetAllUserContainersStats()).Select(x => (x.Status, x.State));
         var results = await CollectRunAttemptsResults();
         StoreSimulationResults(results);
-
-        // TODO Remove finished containers (DockerContainerManager) and clean disk space (SimulationHandler or DockerContainerManager)
+        RemoveDockerContainers(results.Select(x => x.Value.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing container name.")));
 
         // TODO Store run parameters
         // TODO Get container error and store it in DB
         // TODO Policy - owner of a simulation
         // TODO ZIP Handling
         // TODO Endpoints
+    }
+
+    private void RemoveDockerContainers(IEnumerable<string> containerNames)
+    {
+        var tasks = new List<Task>();
+
+        foreach (var containerName in containerNames)
+        {
+            tasks.Add(_dockerContainerManager.CleanAndRemoveContainer(containerName));
+        }
+
+        Task.WaitAll(tasks.ToArray());
     }
 
     private void StoreSimulationResults(IReadOnlyDictionary<SimulationRunAttempt, ContainerListResponse> results)

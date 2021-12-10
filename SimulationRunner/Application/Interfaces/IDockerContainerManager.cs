@@ -27,5 +27,11 @@ public interface IDockerContainerManager : IDisposable
 
     public string GetContainerDataPath(string containerName);
 
+    public Task RemoveContainer(string containerName);
+
+    public Task CleanAfterContainer(string containerName);
+
+    public Task CleanAndRemoveContainer(string containerName);
+
     // TODO Rest
 }
