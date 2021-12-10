@@ -69,6 +69,7 @@ builder.Services.AddTransient<ISimulationHandler, SimulationHandler.SimulationHa
 builder.Services.AddScoped<IJwtGenerator, JwtGenerator>();
 builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 builder.Services.AddSingleton<IDockerContainerManager, DockerContainerManager>();
+builder.Services.AddHostedService<DockerWatchService>();
 
 builder.Services.AddMediatR(typeof(Application.User.UserDto).Assembly);
 builder.Services.AddAutoMapper(typeof(Application.User.UserDto).Assembly);

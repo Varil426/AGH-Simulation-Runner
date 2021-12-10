@@ -77,7 +77,7 @@ public class DockerContainerManager : IDockerContainerManager
         simulationRunAttempt.Id = Guid.NewGuid();
         simulationRunAttempt.Start = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);*/
 
-        dataContext.RunAttempts.Add(simulationRunAttempt);
+        dataContext.RunAttempts.Add(simulationRunAttempt); // TODO Check out why it has to be done that way. It should work without this. (Adding Related Entities; The database operation was expected to affect 1 row(s), but actually affected 0 row(s); Multithreaded EF)
         simulation.SimulationRunAttempts.Add(simulationRunAttempt);
 
         var containerName = simulationRunAttempt.Id.ToString();
