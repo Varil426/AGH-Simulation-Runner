@@ -35,16 +35,16 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
     {
         var test = (await _dockerContainerManager.GetAllUserContainersStats()).Select(x => (x.Status, x.State));
         var results = await CollectRunAttemptsResults();
-        StoreSimulationResults(results);
-        RemoveDockerContainers(results.Select(x => x.Value.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing container name.")));
+        await StoreSimulationResults(results);
+        await RemoveDockerContainers(results.Select(x => x.Value.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing container name.")));
 
+        // TODO Not storing parameters indexes, results indexes in DB. Sort by indexes while returning
         // TODO Get container error and store it in DB
-        // TODO Endpoints
         // TODO Fix and test Docker Compose
         // TODO ZIP Handling
     }
 
-    private void RemoveDockerContainers(IEnumerable<string> containerNames)
+    private async Task RemoveDockerContainers(IEnumerable<string> containerNames)
     {
         var tasks = new List<Task>();
 
@@ -53,10 +53,10 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
             tasks.Add(_dockerContainerManager.CleanAndRemoveContainer(containerName));
         }
 
-        Task.WaitAll(tasks.ToArray());
+        await Task.WhenAll(tasks.ToArray());
     }
 
-    private void StoreSimulationResults(IReadOnlyDictionary<SimulationRunAttempt, ContainerListResponse> results)
+    private async Task StoreSimulationResults(IReadOnlyDictionary<SimulationRunAttempt, ContainerListResponse> results)
     {
         var tasks = new List<Task>();
         foreach (var (runAttempt, containerResponse) in results)
@@ -64,7 +64,7 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
             tasks.Add(StoreSimulationResult(runAttempt.Id, containerResponse));
         }
 
-        Task.WaitAll(tasks.ToArray());
+        await Task.WhenAll(tasks.ToArray());
     }
 
     private async Task StoreSimulationResult(Guid runAttemptId, ContainerListResponse containerResponse)
