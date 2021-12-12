@@ -2,7 +2,7 @@
 
 public class ValueOfParamCollection : ValueOfCollection
 {
-    public ValueOfParamCollection(string value) : base(value)
+    public ValueOfParamCollection(string value, int index) : base(value, index)
     {
     }
 

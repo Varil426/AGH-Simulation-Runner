@@ -38,7 +38,6 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
         await StoreSimulationResults(results);
         await RemoveDockerContainers(results.Select(x => x.Value.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing container name.")));
 
-        // TODO Not storing parameters indexes, results indexes in DB. Sort by indexes while returning
         // TODO Get container error and store it in DB
         // TODO Fix and test Docker Compose
         // TODO ZIP Handling
@@ -99,13 +98,16 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
                     value = null;
                     if (resultValue.Value is IEnumerable list)
                     {
+                        // TODO Improve
+                        var index = 0;
                         foreach (var listValue in list)
                         {
-                            var valueOfCollection = new ValueOfResultCollection(listValue.ToString()!)
+                            var valueOfCollection = new ValueOfResultCollection(listValue.ToString()!, index)
                             {
                                 ResultValue = result,
                             };
                             dataContext.ValuesOfResultCollections.Add(valueOfCollection);
+                            index++;
                         }
                     }
                 }

@@ -118,13 +118,16 @@ public class DockerContainerManager : IDockerContainerManager
                 value = null;
                 if (paramValue.Value is IEnumerable list)
                 {
+                    // TODO Improve
+                    var index = 0;
                     foreach (var listValue in list)
                     {
-                        var valueOfCollection = new ValueOfParamCollection(listValue.ToString()!)
+                        var valueOfCollection = new ValueOfParamCollection(listValue.ToString()!, index)
                         {
                             ParamValue = result,
                         };
                         dataContext.ValuesOfParamCollections.Add(valueOfCollection);
+                        index++;
                     }
                 }
             }

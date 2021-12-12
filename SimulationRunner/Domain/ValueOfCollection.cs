@@ -4,9 +4,10 @@ namespace Domain;
 
 public abstract class ValueOfCollection
 {
-    protected ValueOfCollection(string value)
+    protected ValueOfCollection(string value, int index)
     {
         Value = value;
+        Index = index;
     }
 
     // TODO Remove setters from all Id - move them to constructors
@@ -14,6 +15,7 @@ public abstract class ValueOfCollection
 
     public Guid Id { get; set; }
 
+    [Required]
     public int Index { get; set; }
 
     [Required]

@@ -2,7 +2,7 @@
 
 public class ValueOfResultCollection : ValueOfCollection
 {
-    public ValueOfResultCollection(string value) : base(value)
+    public ValueOfResultCollection(string value, int index) : base(value, index)
     {
     }
 
