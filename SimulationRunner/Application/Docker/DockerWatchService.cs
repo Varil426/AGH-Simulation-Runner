@@ -38,8 +38,11 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
         await StoreSimulationResults(results);
         await RemoveDockerContainers(results.Select(x => x.Value.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing container name.")));
 
+        // TODO Are containers removed from ContainerManager._containers?
+        // TODO Add queuing logic
         // TODO Get container error and store it in DB
         // TODO Fix and test Docker Compose
+        // TODO Change handling of BLOBs (separate DB? File system? some other system?)
         // TODO ZIP Handling
     }
 
