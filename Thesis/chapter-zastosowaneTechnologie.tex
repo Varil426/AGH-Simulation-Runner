@@ -1,2 +1,57 @@
 \chapter{Zastosowane technologie}
 \label{cha:zastosowaneTechnologie}
+\input{commands}
+
+\par W celu rozwiązania problemów przedstawionych w rozdziale \ref{cha:przedstawienieProblemuOdStronyTechnicznej} postanowiono zastosować następujące technologie.
+
+\section{\dotnet{}}
+
+\par Platforma \dotnet{} jako darmowa, \emph{open-source}owa oraz nieustannie rozwijana, wydaje się naturalnym wyborem dla stworzenia \emph{Back-End}u proponowanej aplikacji. Posiada ona uznane przez developerów \emph{framework}i, które pozwalają na szybkie tworzenie skalowalnych aplikacji webowych. Ważnym jej atutem jest zdolność do dynamicznego ładowania i usuwania z pamięci tak zwanych \emph{assemblies}, czyli fundamentalnych bloków, które zawierają informacje o klasach i metodach, oraz ich implementacje. Pozwala to na uruchomienie zewnętrznego kodu bez potrzeby rekompilacji aplikacji.
+
+\par Wersja jaka została wybrana to \emph{\dotnet{} 6}, jako najnowsza dostępna (zapewniająca najdłuższe wsparcie LTS \footnote{Long-term Support}\footnote{Wsparcie dla \dotnet{} 6 ma trwać do Listopada 2024 roku.}), obsługujące język \verb|C#| w wersji 10. Ważnym atutem tej edycji .NET jest jej \emph{corss-platform}owość. Platforma ta od wersji \dotnet{} Core (która ukazała się w 2016 roku) wspiera wszystkie najważniejsze \emph{OS}\footnote{Operating System}, czyli \emph{Windows}a, \emph{Linux}a i \emph{MacOS}a, a wliczając \emph{Xamarin}\footnote{Implementacja standardu \dotnet{} na platformach mobilnych.} również platformy mobilne (\emph{iOS} i \emph{Android}). Pozwala to na uruchamianie aplikacji, korzystając z serwerów działających w oparciu o system operacyjny \emph{Linux}, jak i w lekkich kontenerach opartych również o niego.
+
+\subsection{ASP.NET Core}
+
+\par Popularny, \emph{open-source}owy \emph{framework} do tworzenia aplikacji webowych w \dotnet{}. Został on wybrany ze względu na istniejące do niego rozszerzenia i przystosowanie do bycia uruchamianym na wielu platformach, w tym przy użyciu \emph{Docker}a.
+
+\subsection{Entity Framework Core}
+
+\par \emph{Cross-platform}owy \emph{framework} ułatwiający zarządzanie danymi zapisanymi w bazie danych. Pozwala on na automatyczne mapowanie obiektów i ich właściwości\footnote{ang. Properties} do ich reprezentacji w formie rekordu, jak i na tworzenie relacji między tabelami. Dodana w ten sposób dodatkowa warstwa abstrakcji pozwala na skorzystanie z dowolnego \emph{provider}a spośród wspieranych. Dodatkowo \emph{Entity Framework Core} wspiera tak zwany \emph{Lazy Loading}, co pozwala znacząco przyśpieszyć działanie aplikacji poprzez ładowanie tylko wymaganych danych i późniejsze doładowywanie dodatkowych.
+
+\subsection{Swagger}
+
+TODO % TODO
+
+\subsection{Docker.Dotnet}
+
+\par \emph{Open-source}owa biblioteka, która jest rozwijana pod banerem \emph{.NET Foundation}\footnote{Organizacja mająca na celu rozwój oprogramowania \emph{open-source} dla platformy \emph{\dotnet{}}.}. Pozwala ona na wykonywanie zapytań do \emph{Docker Engine API} w sposób asynchroniczny. Możliwe jest dzięki niej budowanie obrazów, tworzenie, uruchamianie i usuwanie kontenerów oraz sprawdzanie ich stanu.
+
+\subsection{Pozostałe biblioteki}
+
+\subsubsection{MediatR}
+
+TODO % TODO
+
+\subsubsection{AutoMapper}
+
+TODO % TODO
+
+\subsubsection{FluentValidation}
+
+TODO % TODO
+
+\subsubsection{Newtonsoft JSON}
+
+TODO % TODO
+
+\section{\docker}
+
+\par Platforma dostosowana do przygotowywania oraz uruchamiania oprogramowania w formie tak zwanych kontenerów. Wykorzystuje do tego \emph{OS-level virtualization}, co pozwala na osiągnięcie lepszej wydajności i mniejsze zużycie pamięci operacyjnej systemu \emph{host}a, niż na przykład tradycyjna wirtualizacja z użyciem \emph{Virtual Machine}.
+
+\section{PostgreSQL}
+
+\par Darmowy i \emph{open-source}owy system zarządzania relacyjnymi bazami danych. Posiada oficjalny, wspierany obraz \emph{\docker}a.
+
+\section{Postman API Platform}
+
+\par Aplikacja służąca do testowania API. Pozwala na wykonywanie zapytań, edytowanie ich treści, łączenie ich w grupy. Wspiera wiele rodzaj uwierzytelniania, w tym z użyciem \emph{Token}u. Dodatkowo istnieje możliwość definiowania zmiennych, które można wykorzystać w \emph{request}ach, tworzenia skryptów jak i testów.
