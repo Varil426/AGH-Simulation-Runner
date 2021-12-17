@@ -1,16 +1,27 @@
 \chapter{Przedstawienie problemu od strony technicznej}
 \label{cha:przedstawienieProblemuOdStronyTechnicznej}
 
-\section{API jako Aplikacja Webowa}
+\par Przedstawione zagadnienie, jest problemem złożonym. Można je rozdzielić (zgodnie z strategią \emph{Divide \& Conquer}) na kilka kategorii: komunikacja z użytkownikiem i innymi narzędziami informatycznymi, tworzenie i uruchamianie sparametryzowanych symulacji, przechowywanie danych bez określonego uprzednio typu oraz bezpieczeństwo i ryzyka związane z uruchamianiem kodu nieznanego pochodzenia.
+
+\section{API jako interfejs dla Aplikacji Webowej}
 
 % TODO Find some research regarding increase of popularitry of mobile and web technologies.
 \par Podejście do tworzenia oprogramowania bardzo się zmieniło w przeciągu ostatnich dziesięciu lat. Głównie za sprawą rozwoju infrastruktury sieciowej, zapewniającej dostęp do lepszej jakości połączenia internetowego użytkownikom, jak i ogromy wzrost popularności urządzeń mobilnych sprawił, że niegdyś dominująca forma tworzenia aplikacji, to znaczy aplikacje desktopowe, ustąpiły na rzecz usług czysto webowych, lub lekkich klientów które służą wyłącznie jako interfejs graficzny do interakcji z oprogramowaniem działającym na serwerze.
 % TODO Add image from http://www.exe.com.pl/plusy-i-minusy-cienkiego-klienta/
 Rozwiązanie to pozwala na o wiele większą swobodę w tworzeniu GUI \footnote{\emph{Graphical User Interface}}, które poprzez wykorzystywanie elementów graficznych często jest mocno związane z platformą na jakiej działa.
 
-\par Dzięki rozdzieleniu tych dwóch elementów, możliwe jest stworzenie lekkiego klienta, na wybranej platformie (tak długo jak posiada ona dostęp do internetu oraz obsługuje protokół \verb|HTTP|). Aplikacja graficzna, która wykorzystuje takie rozwiązanie jest bardzo lekka (brak konieczności dołączania dodatkowego oprogramowania np. serwera bazy danych), dzięki czemu nadaje się do działania na platformach mobilnych i/lub w przeglądarce, co z kolej prowadzi do zwiększenia potencjalnej liczby odbiorców naszego oprogramowania. Po drugiej stronie znajduje się natomiast API \footnote{\emph{Application Programming Interface}}, pełniący rolę serwera. Aplikacje klienckie łączą się z nim w celu wykonywania poszczególnych żądań, jak i uzyskania danych.
+\par Dzięki rozdzieleniu tych dwóch elementów, możliwe jest stworzenie lekkiego klienta, na wybranej platformie (tak długo jak posiada ona dostęp do internetu oraz obsługuje protokół \texttt{\https{}}). Aplikacja graficzna, która wykorzystuje takie rozwiązanie jest bardzo lekka (brak konieczności dołączania dodatkowego oprogramowania np. serwera bazy danych), dzięki czemu nadaje się do działania na platformach mobilnych i/lub w przeglądarce, co z kolej prowadzi do zwiększenia potencjalnej liczby odbiorców naszego oprogramowania. Po drugiej stronie znajduje się natomiast API \footnote{\emph{Application Programming Interface}}, pełniący rolę serwera. Aplikacje klienckie łączą się z nim w celu wykonywania poszczególnych żądań, jak i uzyskania danych.
 
 \par Warto wspomnieć o dodatkowych korzyściach płynących z takiego rozwiązania, mianowicie o \emph{Cloud Computing}u. Separacja głównej logiki aplikacji od urządzeń użytkowników pozwala na posiadanie niewielkich wymagań sprzętowych wobec nich, jak i wykorzystanie serwerów o dużej mocy obliczeniowej, które przy odpowiednim \emph{Load Balancing}u mogą zostać wykorzystane w pełni.
+
+\section{Symulacje}
+
+% TODO Find source regarding simulation types
+\par Symulacje komputerowe są tworzone w różnych celach. Przy ich pomocy inżynierowie mogą próbować określić wytrzymałość mostu, testować aerodynamikę samolotu lub przewidywać jak zmieni się ruch w mieście, gdy zamkniemy jedną ulicę na czas remontu, naukowcy mogą symulować ruch ciał niebieskich lub tworzyć prognozy rozprzestrzeniania się choroby w zależności od różnych zmiennych, a nauczyciele prezentować wizualizacje zjawisk fizycznych uczniom. Do tego symulacje dzielą się na dyskretne jak i ciągłe w czasie, deterministyczne i stochastyczne lub lokalne i rozproszone. Zagadnienie to jest bardzo złożone i obsłużenie wszystkich przypadków jest niezwykle trudne.
+
+\par Chcąc zapewnić jak największą swobodę użytkownikom, jak i mając na uwadze bezpieczeństwo naszego systemu trzeba ustalić pewne ograniczenia i kompromisy. Zdefiniowanie pewnego wspólnego interfejsu jest konieczne, aby zapewnić komunikację z instancją danej symulacji, w celu uruchomienia jej z ustalonymi parametrami, ale też by wyniki takiej symulacji zebrać i zachować do późniejszej prezentacji.
+
+\par Aby nie kompromitować bezpieczeństwa rozsądnym działaniem jest odcięcie takowej symulacji od internetu. To niestety wyklucza symulacje rozproszone z oczywistych przyczyn.
 
 \section{Uruchamianie kodu \emph{3\textsuperscript{rd}-party}}
 
@@ -18,7 +29,7 @@ Rozwiązanie to pozwala na o wiele większą swobodę w tworzeniu GUI \footnote{
 
 \par Do ograniczenia szkodliwych możliwości takiego oprogramowania, można wykorzystać wiele technik, np. zastosować odpowiednie prawa dostępu w systemie \emph{Linux}. Jednak najbezpieczniejszym rozwiązaniem jest całkowita izolacja takiego kodu, poprzez uruchomienie go w izolowanym środowisku, tak zwanym \emph{sandbox}ie. Pozwala to skutecznie zniwelować wszelkie szkody, które powstałyby w wyniku nieporządnego działania oprogramowania \emph{3\textsuperscript{rd}-party}.
 
-\par Poza bezpieczeństwem ważny jest również sposób w jaki będziemy uruchamiać dostarczony nam kod. Oczywistym jest to, że pliki dostarczone przez użytkownika muszą być kompatybilne z środowiskiem w jakim będziemy chcieli je uruchomić. Jednak gdyby użytkownicy dostarczali nam gotowe programy (skompilowane do plików wykonywalnych (\emph{executable})), to istnieje że będą one korzystały z pewnych zależności (\emph{dependencies}), których nie będziemy posiadać. Kolejną kwestią istotną do rozważenia jest architektura pod jaką kod może zostać skompilowany (\verb|x64|, \verb|x86|, \verb|ARM|). Programy dostarczone w tej formie mają jeszcze jedną poważną wadę - niemożliwość przetestowania ich zawartości, zgodności z ustalonym przez nas standardem. O ile nie umówilibyśmy się z użytkownikiem, na pewien rodzaj interfejsu (a nawet wtedy), sprawdzenie działania i zgodności danego programu mogłoby okazać się dużym wyzwaniem. Innym możliwym podejściem do tego problemu jest wymaganie dostarczenia kodu w postaci biblioteki (np. w jako plik \verb|.JAR| lub \verb|.DLL|) spełniającej udostępniony wcześniej standard.
+\par Poza bezpieczeństwem ważny jest również sposób w jaki będziemy uruchamiać dostarczony nam kod. Oczywistym jest to, że pliki dostarczone przez użytkownika muszą być kompatybilne z środowiskiem w jakim będziemy chcieli je uruchomić. Jednak gdyby użytkownicy dostarczali nam gotowe programy (skompilowane do plików wykonywalnych (\emph{executable})), to istnieje że będą one korzystały z pewnych zależności (\emph{dependencies}), których nie będziemy posiadać. Kolejną kwestią istotną do rozważenia jest architektura pod jaką kod może zostać skompilowany (\texttt{x64}, \texttt{x86}, \texttt{ARM}). Programy dostarczone w tej formie mają jeszcze jedną poważną wadę - niemożliwość przetestowania ich zawartości, zgodności z ustalonym przez nas standardem. O ile nie umówilibyśmy się z użytkownikiem, na pewien rodzaj interfejsu (a nawet wtedy), sprawdzenie działania i zgodności danego programu mogłoby okazać się dużym wyzwaniem. Innym możliwym podejściem do tego problemu jest wymaganie dostarczenia kodu w postaci biblioteki (np. w jako plik \texttt{.JAR} lub \texttt{.DLL}) spełniającej udostępniony wcześniej standard.
 
 \section{Przechowywanie danych}
 
