@@ -7,7 +7,7 @@
 
 \section{Architektura}
 
-\par Odpowiedni podział odpowiedzialności i ustalenie komunikacji między komponentami było jednym z najważniejszych elementów całego projektu. Każdy z komponentów powinien spełniać jasno określone zadania, oraz pewną abstrakcję aby w przypadku późniejszych modyfikacji dało się je łatwo zastąpić. Z tą myślą powstał projekt systemu. Inspiracją dla niego był
+\par Odpowiedni podział odpowiedzialności i ustalenie komunikacji między komponentami było jednym z najważniejszych elementów całego projektu. Każdy z komponentów powinien spełniać jasno określone zadania, oraz pewną abstrakcję aby w przypadku późniejszych modyfikacji dało się je łatwo zastąpić. Z tą myślą powstał projekt systemu. Inspiracją dla niego był artykuł z 2011 roku pod tytułem "\emph{Simulation Platform: A cloud-based online simulation environment}"\cite{YAMAZAKI2011693}. Prezentuje on podobną ideę, ale wykorzystując do wirtualizacji \emph{Oracle VirtualBox}.
 
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Component Communication Diagram}
@@ -39,7 +39,7 @@
 
 \par \emph{Application} jest głównym projektem, który spina wszystkie pozostałe. Znajduje się w nim cała logika biznesowa. Odpowiada on za między innymi tworzenie użytkowników i ich autoryzację, zbieranie parametrów i wyników symulacji oraz obsługę pozostałych zapytań, w tym tych związanych z kontenerami (więcej informacji na ten temat znajduje się w sekcjach \ref{sec:dockerContainerManager} i \ref{sec:dockerWatchService}).
 
-\par Odpowiedzialność związana z obsługą symulacji dostarczonych przez użytkowników należy do \emph{SimulationHandler}. Znajdziemy tu interfejs \texttt{ISimulationHandler} i jego implementację. Klasa ta potrafi tworzyć obiekty \emph{SimulationStandard}, w tym przeprowadzać ich serializację i deserializację. Kolejną istotną cechą jest dynamiczne ładowanie i rozładowanie tak zwanych \emph{Assemblies}, jak i sprawdzanie ich poprawność i zgodności z \emph{SimulationStandard}.
+\par Odpowiedzialność związana z obsługą symulacji dostarczonych przez użytkowników należy do \emph{SimulationHandler}. Znajduje się tutaj interfejs \texttt{ISimulationHandler} i jego implementację. Klasa ta potrafi tworzyć obiekty \emph{SimulationStandard}, w tym przeprowadzać ich serializację i deserializację. Kolejną istotną cechą jest dynamiczne ładowanie i rozładowanie tak zwanych \emph{Assemblies}, jak i sprawdzanie ich poprawność i zgodności z \emph{SimulationStandard}.
 
 \par Projekty \emph{Persistence} i \emph{Domain} odpowiadają za przechowywanie danych. Działają one w oparciu o \emph{Entity Framework Core}. Pierwszy z nich odpowiada za rozszerzenie tak zwanego \emph{DbContext}\footnote{Specjalna klasa pochodząca z Entity Framework Core definiująca pewien kontekst danych.}, w którym znajdują się deklaracje kolekcji, które będą mapowane do poszczególnych tabel w bazie danych. Znajdują się tutaj również migracje, wspomagające ciągły rozwój aplikacji, poprzez zapewnianie mechanizmu do prostego aktualizowania przechowywanych danych w wypadku zmiany ich struktury. Projekt \emph{Domain} reprezentuje z kolej poszczególne byty na których operuje nasza aplikacja. Są one bezpośrednio mapowane do odpowiednich rekordów. Warstwa ta została zaprojektowana przy pomocy tak zwanego podejścia \emph{Code First}. Oznacza to, że odpowiednie struktury w bazie danych zostały automatycznie wygenerowane na podstawie zdefiniowanych klas.
 
@@ -50,11 +50,12 @@
 \subsection{Zastosowane Wzorce Projektowe}
 
 % TODO Add to bibliography sources for Design Patterns
-\par Wzorce projektowe pozwalają programistą w szybszy sposób zaznajomić się z aplikacją, poprzez dodanie kolejnej warstwy aplikacji, jak i rozwiązać problemy, które już kiedyś zostały rozwiązane. Należy jednak pamiętać, że trzeba umiejętnie z nich korzystać i rozważyć zarówno korzyści, jak i potencjalne mankamenty, które mogą z nich wyniknąć. Mając to na uwadze, zdecydowano się użyć następujących \emph{Design Patterns}.
+\par Wzorce projektowe pozwalają programistom w szybszy sposób zaznajomić się z aplikacją, poprzez dodanie kolejnej warstwy aplikacji, jak i rozwiązać problemy, które już kiedyś zostały rozwiązane. Należy jednak pamiętać, że trzeba umiejętnie z nich korzystać i rozważyć zarówno korzyści, jak i potencjalne mankamenty, które mogą z nich wyniknąć. Mając to na uwadze, zdecydowano się użyć następujących \emph{Design Patterns}.
 
 \begin{itemize}
 	\item Model View Controller TODO % TODO
 	\item Dependency Injection TODO % TODO
+	\item Mediator TODO % TODO
 	\item Data Transfer Object TODO % TODO
 	\item Singleton TODO % TODO
 \end{itemize}
