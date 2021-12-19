@@ -63,6 +63,30 @@
 \subsection{Simulation Standard}
 \label{sec:simulationStandard}
 
+\par Aby poprawnie uruchamiać dostarczony kod, wymagane było stworzenie standardu, który określałby wymagania jak i ograniczenia dotyczące dostarczanych plików. W tym celu powstał \emph{Simulation Standard}. Jest to biblioteka zawierająca interfejsy i podstawowe ich implementacje, obiektów potrzebnych do poprawnej inicjalizacji instancji symulacji.
+
+\par Od użytkownika wymaga się aby zaimplementował \emph{ISimulationBuilder}, który zwróci symulację. Implementacja ta powinna posiadać przynajmniej jeden bezparametrowy konstruktor.
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{Simulation Standard Main Diagram}
+	\caption{Simulation Standard}
+	\label{fig:simulationStandard}
+\end{figure}
+
+\par Na załączonym powyżej diagramie (\ref{fig:simulationStandard}) widzimy relację pomiędzy poszczególnymi interfejsami i klasami. Kluczowymi elementami są tutaj \emph{ISimulationBuilder} oraz \emph{ISimulation}. Konstruktor ten pozwala, bazując na instancji \emph{ISimulationParams}, stworzyć symulację, która uruchomiona, zwróci rezultat swojego działania. Zarówno parametry, jak i rezultaty powinny być zgodne z zdefiniowanym szablonem\english{Template}. Powodem tego jest konieczność posiadania dodatkowej informacji potrzebnej do późniejszego poprawnego odtworzenia danych po ich serializacji, jak i w przypadku parsowania zapytania z treścią w formacie \emph{JSON}.
+
+\par \emph{SimulationValuesDictionary} jest implementacją słownika, która służy do przechowywania wartości parametrów i rezultatów skojarzonych z odpowiednimi nazwami. Odpowiada ona również za kontrolę poprawności danych przechowywanych w niej, dlatego też jest to klasa zapieczętowana\english{Sealed}\footnote{Sealed - klasa, po której nie można dziedziczyć.}. Zostało to dokonane w celu wyraźnego zaznaczenia, że nie powinno się ingerować w jej logikę, ponieważ przysłanianie jej członków może w łatwy sposób prowadzić do niepożądanych rezultatów i błędów aplikacji.
+
+\par Dodatkowo, dla wygody użytkownika, dołączone do biblioteki zostały domyśle implementacje \emph{SimulationParams} i \emph{SimulationResults}. Są to proste klasy, które inicjalizują wymagane do swojego funkcjonowania komponenty.
+
+\par Wspomniane wcześniej szablony, służą do zdefiniowania typów danych (oraz ich nazw) jakie będą \emph{input}em i \emph{output}em symulacji. Ich relacje z innymi obiektami można sprawdzić na załączonym poniżej diagramie (\ref{fig:simulationStandardTemplates}). Odpowiedzialnością zbliżone są do \emph{ISimulationParams} i \emph{ISimulationResults}, gdzie jedyną różnicą jest to, że nie przechowują wartości ale typy danych. Posiadając wartość parametru w postaci tekstowej, jak i wzorca, który go definiuje jesteśmy wstanie odtworzyć odpowiedni obiekt.
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{Simulation Standard Templates Diagram}
+	\caption{Simulation Standard Templates}
+	\label{fig:simulationStandardTemplates}
+\end{figure}
+
 \subsection{Docker Container Manager}
 \label{sec:dockerContainerManager}
 
