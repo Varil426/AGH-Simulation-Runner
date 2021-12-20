@@ -73,13 +73,13 @@
 	\label{fig:simulationStandard}
 \end{figure}
 
-\par Na załączonym powyżej diagramie (\ref{fig:simulationStandard}) widzimy relację pomiędzy poszczególnymi interfejsami i klasami. Kluczowymi elementami są tutaj \emph{ISimulationBuilder} oraz \emph{ISimulation}. Konstruktor ten pozwala, bazując na instancji \emph{ISimulationParams}, stworzyć symulację, która uruchomiona, zwróci rezultat swojego działania. Zarówno parametry, jak i rezultaty powinny być zgodne z zdefiniowanym szablonem\english{Template}. Powodem tego jest konieczność posiadania dodatkowej informacji potrzebnej do późniejszego poprawnego odtworzenia danych po ich serializacji, jak i w przypadku parsowania zapytania z treścią w formacie \emph{JSON}.
+\par Na załączonym powyżej diagramie (\ref{fig:simulationStandard}) widzimy relację pomiędzy poszczególnymi interfejsami i klasami. Kluczowymi elementami są tutaj \texttt{ISimulationBuilder} oraz \texttt{ISimulation}. Konstruktor ten pozwala, bazując na instancji \texttt{ISimulationParams}, stworzyć symulację, która uruchomiona, zwróci rezultat swojego działania. Zarówno parametry, jak i rezultaty powinny być zgodne z zdefiniowanym szablonem\english{Template}. Powodem tego jest konieczność posiadania dodatkowej informacji potrzebnej do późniejszego poprawnego odtworzenia danych po ich serializacji, jak i w przypadku parsowania zapytania z treścią w formacie \emph{JSON}.
 
-\par \emph{SimulationValuesDictionary} jest implementacją słownika, która służy do przechowywania wartości parametrów i rezultatów skojarzonych z odpowiednimi nazwami. Odpowiada ona również za kontrolę poprawności danych przechowywanych w niej, dlatego też jest to klasa zapieczętowana\english{Sealed}\footnote{Sealed - klasa, po której nie można dziedziczyć.}. Zostało to dokonane w celu wyraźnego zaznaczenia, że nie powinno się ingerować w jej logikę, ponieważ przysłanianie jej członków może w łatwy sposób prowadzić do niepożądanych rezultatów i błędów aplikacji.
+\par \texttt{SimulationValuesDictionary} jest implementacją słownika, która służy do przechowywania wartości parametrów i rezultatów skojarzonych z odpowiednimi nazwami. Odpowiada ona również za kontrolę poprawności danych przechowywanych w niej, dlatego też jest to klasa zapieczętowana\english{Sealed}\footnote{Sealed - klasa, po której nie można dziedziczyć.}. Zostało to dokonane w celu wyraźnego zaznaczenia, że nie powinno się ingerować w jej logikę, ponieważ przysłanianie jej członków może w łatwy sposób prowadzić do niepożądanych rezultatów i błędów aplikacji.
 
-\par Dodatkowo, dla wygody użytkownika, dołączone do biblioteki zostały domyśle implementacje \emph{SimulationParams} i \emph{SimulationResults}. Są to proste klasy, które inicjalizują wymagane do swojego funkcjonowania komponenty.
+\par Dodatkowo, dla wygody użytkownika, dołączone do biblioteki zostały domyśle implementacje \texttt{SimulationParams} i \texttt{SimulationResults}. Są to proste klasy, które inicjalizują wymagane do swojego funkcjonowania komponenty.
 
-\par Wspomniane wcześniej szablony, służą do zdefiniowania typów danych (oraz ich nazw) jakie będą \emph{input}em i \emph{output}em symulacji. Ich relacje z innymi obiektami można sprawdzić na załączonym poniżej diagramie (\ref{fig:simulationStandardTemplates}). Odpowiedzialnością zbliżone są do \emph{ISimulationParams} i \emph{ISimulationResults}, gdzie jedyną różnicą jest to, że nie przechowują wartości ale typy danych. Posiadając wartość parametru w postaci tekstowej, jak i wzorca, który go definiuje jesteśmy wstanie odtworzyć odpowiedni obiekt.
+\par Wspomniane wcześniej szablony, służą do zdefiniowania typów danych (oraz ich nazw) jakie będą \emph{input}em i \emph{output}em symulacji. Ich relacje z innymi obiektami można sprawdzić na załączonym poniżej diagramie (\ref{fig:simulationStandardTemplates}). Odpowiedzialnością zbliżone są do \texttt{ISimulationParams} i \texttt{ISimulationResults}, gdzie jedyną różnicą jest to, że nie przechowują wartości ale typy danych. Posiadając wartość parametru w postaci tekstowej, jak i wzorca, który go definiuje jesteśmy wstanie odtworzyć odpowiedni obiekt.
 
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Simulation Standard Templates Diagram}
@@ -90,8 +90,28 @@
 \subsection{Docker Container Manager}
 \label{sec:dockerContainerManager}
 
+\par Zarządzanie kontenerami, uruchamianie ich oraz usuwanie i zbieranie rezultatów, zostało oddelegowane do \emph{Docker Container Manager}a. Komponent ten, przy użyciu \texttt{ISimulationHandler}, potrafi przygotować środowisko, w którym zostanie uruchomiony \emph{Simmulation Runner Service}. Wymiana informacji z kontenerem odbywa się poprzez specjalnie przygotowany folder w systemie plików. Menadżer umieszcza tam pliki symulacji, jak i pliki z zserializowanymi danymi, a w późniejszym etapie odbiera stamtąd wyniki.
+
+\par Zastosowano bibliotekę \emph{Docker.Dotnet}, która pozwala na wykonywanie zapytań do \emph{\docker{} Engine API}. Zawiera ona obiekty reprezentujące zarówno parametry zapytań, jak i uzyskane odpowiedzi. Kolejną istotną jej zaletą jest to, że jej implementacja wspiera asynchroniczne mechanizmy platformy \emph{\dotnet{}}.
+
+\par Ponieważ zarówno zapytania do \emph{\docker{} Engine API}, jak i działania na plikach są to operacje, które mogą zająć znaczącą ilość czasu, to istotnym elementem jest obsługa tych działań w sposób asynchroniczny, aby nie blokować wątku. W implementacji skorzystano z mechanizmu \texttt{async/await} platformy \emph{\dotnet{}}. Dzięki czemu system jest w stanie obsłużyć zapytania w krótszym czasie (wątek \emph{request}u nie jest blokowany, a może wykonywać inne działania, zanim będzie konieczne oczekiwanie).
+
 \subsection{Docker Watch Service}
 \label{sec:dockerWatchService}
+
+\par Kiedy kontener \emph{\docker{}}a kończy swoje działanie to przechodzi w stan \texttt{exited}. \emph{Docker Watch Service} odpowiada za poszukiwanie takich kontenerów. Serwis ten działa w tle przez cały czas życia aplikacji i w regularnych odstępach czasu sprawdza działające instancje, które zostały zainicjalizowane przez \emph{Docker Container Manager}. Jego działanie prezentuje następujący schemat blokowy.
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{Docker Watch Service Setps}
+	\caption{Docker Watch Service - Schemat Blokowy}
+\end{figure}
+
+\par Wszystkie te informacje, można zreasumować w postaci cyklu życia kontenera.
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{Container Lifecycle}
+	\caption{Cykl Życia Kontenera}
+\end{figure}
 
 \subsection{Schemat Bazy Danych}
 
