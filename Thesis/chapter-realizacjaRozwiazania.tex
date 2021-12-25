@@ -115,10 +115,25 @@
 
 \subsection{Schemat Bazy Danych}
 
+\par Zaprojektowanie odpowiedniego schematu bazy danych było jednym z priorytetowych wyzwań podczas tworzenia tej aplikacji. Jej konstrukcja powinna pozwolić na przechowywanie informacji o użytkowniku, plików symulacji, jak i jej parametrów oraz wyników, podzielonych na poszczególne uruchomienia\footnote{Run Attempt}. Dodatkowym wyzwaniem było przechowanie wspomnianych wcześniej danych wejściowych i wyjściowych. Pomogło w tym ograniczenie ich rodzaju w \emph{Simulation Standard}zie (więcej informacji na ten temat można znaleźć w sekcji \ref{sec:simulationStandard}). Ostateczną formą jest zaprezentowany poniżej schemat.
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{Database Schema Diagram}
+	\caption{Schemat Bazy Danych}
+\end{figure}
+
+\par Do jego reprezentacji postanowiono zastosować tak zwaną \emph{Crow's Foot Notation}. Przy procesie tworzenie użyto podejścia \emph{Code First}, co oznacza, że klasy stworzone w \texttt{C\#} są mapowane do odpowiednich tabel. Na schemacie pominięto mniej znaczące elementy (dla przykładu, jako iż klasa \texttt{User} dziedziczy po \texttt{IdentityUser} to jej tabela zawiera informacje potrzebne do pełnego odtworzenia również obiektów tej klasy), aby zachować jego czytelność.
+
+\par Wspomnieć należy tutaj również o ogromnej roli \emph{Entity Framework Core}. Dzięki zapewnionemu przez niego systemowi migracji, możliwe było szybkie dokonywanie zmian w strukturze bazy danych podczas rozwijania aplikacji, bez konieczności usuwania już istniejącej i zaczynania od początku. O ile brak tego mechanizmu spowolniłby proces \emph{development}u, to jego brak nie byłby krytyczny. Tego samego nie można jednak powiedzieć o późniejszym stadium rozwoju. W momencie udostępnienia \emph{software}u użytkownikom, istnienie mechanizmu umożliwiającego wprowadzanie zmian w istniejącej już strukturze danych jest nieocenione.
+
 \section{Wymagania i Konfiguracja}
 \label{sec:wymaganiaIKonfiguracja}
 
 \section{Endpoints}
 
 \section{Obsługa błędów}
+
+\section{Prezentacja działania aplikacji}
+
+\section{Testy}
 
