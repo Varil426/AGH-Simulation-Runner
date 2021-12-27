@@ -16,11 +16,11 @@ public interface ISimulationBuilder
     /// Creates <see cref="ISimulationParams"/> template.
     /// </summary>
     /// <returns>Params template.</returns>
-    public ISimulationParamsTemplate CreateSimulationParamsTemplate();
+    public SimulationParamsTemplate CreateSimulationParamsTemplate();
 
     /// <summary>
     /// Creates <see cref="ISimulationResults"/> template.
     /// </summary>
     /// <returns>Results template.</returns>
-    public ISimulationResultsTemplate CreateSimulationResultsTemplate();
+    public SimulationResultsTemplate CreateSimulationResultsTemplate();
 }
