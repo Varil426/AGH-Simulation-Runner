@@ -25,8 +25,9 @@ public class DockerContainerManager : IDockerContainerManager
     private readonly DockerClient _dockerClient;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ISimulationHandler _simulationHandler;
-    //private readonly IConfiguration _configuration;
-    private readonly string _containersDirectoriesRootPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!, "containers");
+    private readonly IConfiguration _configuration;
+    private readonly string _containersDirectoriesRootPath;
+    private readonly string _containersHostDirectoryPath;
     //private readonly string _simulationRunnerServicePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!, "SimulationRunnerService");
     //private readonly string _simulationRunnerServiceDockerfileName = "DockerfileDockerApi";
     //private readonly string _dockerRepository = "simulationrunnerservice";
@@ -36,8 +37,15 @@ public class DockerContainerManager : IDockerContainerManager
     {
         _serviceScopeFactory = serviceScopeFactory;
         _simulationHandler = simulationHandler;
-        //_configuration = configuration;
-        // TODO Get URI form configuration if need be
+        _configuration = configuration;
+
+        var isDocker = Environment.GetEnvironmentVariable("IS_DOCKER") is not null;
+        _containersDirectoriesRootPath = isDocker
+            ? "/containers"
+            : Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!, "containers");
+
+        _containersHostDirectoryPath = isDocker ? _configuration.GetValue<string>("DockerHostContainersPath") : _containersDirectoriesRootPath;
+
         _dockerClient = new DockerClientConfiguration().CreateClient();
 
         _dockerClient.DefaultTimeout = TimeSpan.FromSeconds(30);
@@ -93,7 +101,7 @@ public class DockerContainerManager : IDockerContainerManager
         await StoreSimumationParameters(simulationParams, simulationRunAttempt, dataContext);
         await PrepareSimulationFiles(containerDataPath, simulation, simulationParams, simulationParamsTemplate, simulationResultsTemplate);
 
-        var containerId = await CreateNewContainer(GetContainerDataPath(containerName), containerName);
+        var containerId = await CreateNewContainer(GetContainerDataPathOnHost(containerName), containerName);
         AddUserContainer(simulation.User, containerId, simulationRunAttempt);
         await RunContainer(containerId);
         await dataContext.SaveChangesAsync();
@@ -301,6 +309,8 @@ public class DockerContainerManager : IDockerContainerManager
         .ToDictionary(x => x.RunAttempt, x => x.ContainerStats);
 
     public string GetContainerDataPath(string containerName) => Path.Combine(_containersDirectoriesRootPath, containerName);
+
+    public string GetContainerDataPathOnHost(string containerName) => Path.Combine(_containersHostDirectoryPath, containerName);
 
     public async Task RemoveContainer(string containerName)
     {

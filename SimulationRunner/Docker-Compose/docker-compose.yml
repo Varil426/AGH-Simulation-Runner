@@ -17,6 +17,7 @@ services:
 #      - simulationrunnerservice
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./containers:/containers
   postgresHost:
     image: postgres:latest
     restart: always
