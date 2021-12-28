@@ -314,8 +314,19 @@ public class DockerContainerManager : IDockerContainerManager
 
     public async Task RemoveContainer(string containerName)
     {
-        var containerId = _containers.Values.SelectMany(x => x).FirstOrDefault(x => x.RunAttempt.Id.ToString() == containerName).ContainerId ?? throw new Exception("Container not found");
-        await _dockerClient.Containers.RemoveContainerAsync(containerId, new ContainerRemoveParameters());
+        //var containerId = _containers.Values.SelectMany(x => x).FirstOrDefault(x => x.RunAttempt.Id.ToString() == containerName).ContainerId ?? throw new Exception("Container not found");
+        var userToContainers = _containers.FirstOrDefault(x => x.Value.Any(y => y.RunAttempt.Id.ToString() == containerName));
+
+        if (EqualityComparer<KeyValuePair<Domain.User, List<(string, SimulationRunAttempt)>>>.Default.Equals(userToContainers, default(KeyValuePair<Domain.User, List<(string, SimulationRunAttempt)>>)))
+            throw new Exception("Container not found");
+
+        var containerIdElement = userToContainers.Value.FirstOrDefault(x => x.RunAttempt.Id.ToString() == containerName);
+        await _dockerClient.Containers.RemoveContainerAsync(containerIdElement.ContainerId, new ContainerRemoveParameters());
+
+        userToContainers.Value.Remove(containerIdElement);
+
+        if (!userToContainers.Value.Any())
+            _containers.Remove(userToContainers.Key);
     }
 
     public async Task CleanAfterContainer(string containerName)

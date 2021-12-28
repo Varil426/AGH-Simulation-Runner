@@ -33,15 +33,13 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
 
     private async Task PerformTask()
     {
-        var test = (await _dockerContainerManager.GetAllUserContainersStats()).Select(x => (x.Status, x.State));
         var results = await CollectRunAttemptsResults();
         await StoreSimulationResults(results);
         await RemoveDockerContainers(results.Select(x => x.Value.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing container name.")));
 
-        // TODO Are containers removed from ContainerManager._containers?
+        // TODO I changed SimulationStandard. Need to update simualtions.
         // TODO Add queuing logic
-        // TODO Get container error and store it in DB
-        // TODO Fix and test Docker Compose
+        // TODO Get container error and store it in DB. Update thesis.
         // TODO Change handling of BLOBs (separate DB? File system? some other system?)
         // TODO ZIP Handling
     }
