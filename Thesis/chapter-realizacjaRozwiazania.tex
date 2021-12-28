@@ -58,6 +58,7 @@
 	\item Mediator TODO % TODO
 	\item Data Transfer Object TODO % TODO
 	\item Singleton TODO % TODO
+	\item Disposable TODO % TODO
 \end{itemize}
 
 \subsection{Simulation Standard}
@@ -128,6 +129,64 @@
 
 \section{Wymagania i Konfiguracja}
 \label{sec:wymaganiaIKonfiguracja}
+
+\subsection{Wymagania}
+\par Aplikację webową, można uruchomić w jednym z dwóch możliwych wariantów (więcej informacji można znaleźć w sekcji \ref{subsec:konfiguracja}). Minimalnym wymaganiem jest system z zainstalowanym \emph{\docker}em w wersji:
+
+\begin{itemize}
+	\item \emph{\docker{} Client} - 20.10.11 lub wyższej
+	\item \emph{\docker{} Engine} - 20.10.11 lub wyższej
+\end{itemize}
+
+\par Pozwoli to na uruchomienie programu z użyciem \emph{\docker{} Compose}, który skompiluje wszystkie projekty, uruchomi aplikację w kontenerze\english{Container} oraz utworzy odpowiedni kontener dla bazy danych na bazie oficjalnego obrazu\english{Image} \emph{PostgreSQL}. Podejście to zostało przedstawione w postaci grafiki \ref{fig:wizualizacjaWariantowKonfiguracji} jako wariant pierwszy.
+
+\par Drugim możliwym wariantem jest uruchomienie aplikacji webowej w systemie \emph{host}a. Konieczne jest do tego środowisko \emph{\dotnet{} 6} oraz wspomniany wcześniej \emph{\docker{}}. Konfiguracja ta wymaga samodzielnego uruchomienia kontenera (lub innego środowiska) dla bazy danych \emph{PostgreSQL}. Podejście to zostało przedstawione w postaci grafiki \ref{fig:wizualizacjaWariantowKonfiguracji} jako wariant drugi. Baza danych nie została tutaj zaprezentowana, ponieważ nie istnieje wymaganie, aby była ona obecna w systemie \emph{host}a. Możliwym jest posłużenie się zdalną bazą danych poprzez zapewnienie odpowiedniego \emph{Connection String}.
+
+\begin{figure}[H]
+	\includegraphics[width=\linewidth]{Configuration Variants Diagram}
+	\caption{Wizualizacja Wariantów Konfiguracji}
+	\label{fig:wizualizacjaWariantowKonfiguracji}
+\end{figure}
+
+\par Przed uruchomieniem wymagane jest również stworzenie odpowiedniego obrazu \emph{\docker{}}a na bazie pliku \emph{Dockerfile} znajdującego się w projekcie \emph{SimulationRunnerService}. Można tego dokonać przy użyciu komendy:
+
+\begin{lstlisting}
+	docker build -t simulationrunnerservice -f .\SimulationRunnerService\Dockerfile .
+\end{lstlisting}
+
+\subsection{Konfiguracja}
+\label{subsec:konfiguracja}
+
+\par Do odpowiedniego skonfigurowania aplikacji wykorzystuje się pliki \emph{launchSettings.json} i \emph{appsettings.json}. Znajdują się one w projekcie \emph{BackendAPI} i posiadają wiele możliwych wariantów (na przykład istnieje \emph{appsettings.json} i \emph{appsettings.Development.json}). Odpowiedni plik konfiguracyjny jest wybierany na podstawie ustawienia odpowiedniej zmiennej środowiskowej (\texttt{ASPNETCORE\_ENVIRONMENT}) lub parametru przekazywanego podczas uruchamiania aplikacji przy użyciu \emph{\dotnet{}} \emph{CLI}\footnote{Command Line Interface}.
+
+\newcommand{\onlyConfiguration}[1]{(dotyczy tylko konfiguracji numer #1 z grafiki \ref{fig:wizualizacjaWariantowKonfiguracji})}
+
+\par Dla plików \emph{appsettings.json}, parametry jakie należy dostarczyć to:
+\begin{itemize}
+	\item \texttt{TokenKey} - Klucz dla tokenów.
+	\item \texttt{JWT}
+	\begin{itemize}
+		\item \texttt{Audience} - odbiorcy tokenu.
+		\item \texttt{Issuer} - nadawca tokenu.
+	\end{itemize}
+	\item \texttt{SimulationRunnerServiceDockerImage} - ID lub nazwa obrazu \emph{\docker{}}
+	\item \texttt{DockerHostContainersPath} - ścieżka dostępu do folderu przeznaczonego na dane kontenerów \onlyConfiguration{1}.
+	\item \texttt{ConnectionStrings}
+	\begin{itemize}
+		\item \texttt{PostgreSQL} - \emph{Connection String} definiujący połączenie z bazą danych \onlyConfiguration{2}.
+		\item \texttt{PostgreSQLDocker} - służy dokładnie temu samemu celowi co \texttt{PostgreSQL}. Aby usprawnić proces rozwijania aplikacji, jak i ułatwić jej testownie, utworzone dwie zmienne \onlyConfiguration{1}.
+	\end{itemize}
+\end{itemize}
+
+\par Dodatkowo należy dostarczyć następujące dane w postaci \emph{\dotnet{} Secret}:
+\begin{itemize}
+	\item \texttt{Postgres}
+	\begin{itemize}
+		\item \texttt{user} - nazwa użytkownika bazy danych.
+		\item \texttt{password} - hasło użytkownika bazy danych.
+	\end{itemize}
+	\item \texttt{Kestrel:Certificates:Development:Password} - hasło dla certyfikatu. Zmienna ta może się różnić w zależności od środowiska i certyfikatu jaki jest wykorzystywany. Dla testów użyto \emph{Self-Signed Certificate} wygenerowanego przy użyciu narzędzia \emph{dotnet dev-certs}.
+\end{itemize}
 
 \section{Endpoints}
 
