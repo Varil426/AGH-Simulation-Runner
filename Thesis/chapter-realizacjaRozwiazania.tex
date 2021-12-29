@@ -211,6 +211,8 @@
 	\caption{Prezentacja Swaggera}
 \end{figure}
 
+\par Wartym dodatkowej uwagi jest \emph{endpoint}: \texttt{POST} \emph{/api/Simulation}, ze względu na to, iż weryfikuje on zawartość przesłanego pliku i sprawdza jego zgodność ze standardem. Wykonuje on testy na to, czy zostały zaimplementowane \texttt{ISimulation} oraz \texttt{ISimulationBuilder}, czy istnieje bezparametrowy konstruktor oraz tworzy odpowiednie szablony dla parametrów i rezultatów symulacji. Co za tym wszystkim idzie, wczytuje on przesłany plik i uruchamia kod pochodzący z niego. \emph{Endpoint} ten niestety nie deleguje tego zadania do specjalnego kontenera, ale wykonuje wszystkie działania samodzielnie. Powoduje to istnienie potencjalnej luki bezpieczeństwa. W przypadku chęci udostępnienia tej aplikacji do szerszej publiki, działanie tego \emph{endpoint}u powinno zostać zmienione i również korzystać z konteneryzacji celem bezpiecznego uruchamiania kodu \emph{3\textsuperscript{rd}-party}.
+
 \section{Obsługa błędów}
 
 \par Aplikacje komputerowe powinny być tworzone z myślą o obsłudze potencjalnych błędów. Przez błędy mamy tutaj na myśli zarówno błędy po stronie użytkownika, jak i błędy, za które odpowiedzialny jest serwer. Taki też podział zastosowano w tym projekcie. Aby obsłużyć w odpowiedni sposób wszystkie sytuacje wyjątkowe, wykorzystano tutaj mechanizm wyjątków\english{Exceptions}.
