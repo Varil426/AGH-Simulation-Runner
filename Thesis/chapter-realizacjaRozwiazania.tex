@@ -55,12 +55,12 @@
 \par Wzorce projektowe pozwalają programistom w szybszy sposób zaznajomić się z aplikacją, poprzez dodanie kolejnej warstwy aplikacji, jak i rozwiązać problemy, które już kiedyś zostały rozwiązane. Należy jednak pamiętać, że trzeba umiejętnie z nich korzystać i rozważyć zarówno korzyści, jak i potencjalne mankamenty, które mogą z nich wyniknąć. Mając to na uwadze, zdecydowano się użyć następujących \emph{Design Patterns}.
 
 \begin{itemize}
-	\item Model View Controller TODO % TODO
-	\item Dependency Injection TODO % TODO
-	\item Mediator TODO % TODO
-	\item Data Transfer Object TODO % TODO
-	\item Singleton TODO % TODO
-	\item Disposable TODO % TODO
+	\item Model View Controller - jeden z najbardziej rozpowszechnionych wzorców projektowych, mówiących o architekturze aplikacji. Wprowadza on prosty podział odpowiedzialności poszczególnych komponentów programu. Został on wybrany ze względu na swoją adekwatność oraz wsparcie ze strony \emph{ASP.NET Core}.
+	\item Dependency Injection - wzorzec pozwalający na tworzenie luźno-powiązanych ze sobą komponentów\english{Loosely coupled}. Pozwala on na sprawny rozwój oprogramowania, oraz skłania do wprowadzania dodatkowej abstrakcji. Pozwala on na uzyskanie \emph{Inversion of Control}. Dzięki wykorzystaniu \emph{ASP.NET Core} i istniejącego w nim systemu zarządzania serwisami zastosowanie go nie wiązało się z wykonaniem dodatkowej pracy.
+	\item Mediator - wzorzec, według którego lepiej jest gdy istnieje jeden obiekt zarządzający przepływem informacji, niż wiele powiązań pomiędzy mniej znaczącymi elementami. Brak zastosowania tego wzorca, mógłby łatwo doprowadzić do sytuacji, w której kod jest mało czytelny, oraz to wycieków pamięci\english{Memory leak} spowodowanych posiadaniem zbędnych referencji pomiędzy obiektami. Aby sprawnie zastosować ten wzorzec, postanowiona skorzystać z pakietu \emph{MediatR}.
+	\item Data Transfer Object - wzorzec, mający na celu zamiany obiektu, na jego odpowiednik, zawierający tylko wymagane dane. Pozwala to na przesyłanie mniejszej ilości danych, jak i na upewnienie się, że nie zostaną zwrócone, żadne nieporządne informacje, takie jak na przykład hash hasła użytkownika.
+	\item Singleton - jeden z najpopularniejszych wzorców projektowych. Jeżeli jakaś klasa go implementuje, oznacza to, że powinna istnieć tylko jedna jej instancja. W przypadku \emph{ASP.NET Core} istnieje specjalny typ serwisu. Jeżeli z niego skorzystamy, to \emph{framework} podczas korzystania z \emph{Dependency Injection} zapewni istnienie tylko jednego takiego obiektu.
+	\item Disposable - wzorzec wykorzystywany w \texttt{C\#} do odpowiedniego zwalniania zasobów zarówno \emph{managed}, jak i \emph{unmanaged}. Rozwiązuje on problemy takie jak zamknięcie strumieni do plików lub połączenia z bazą danych. Jest on stosowany ze względu na niedeterministyczną naturę \emph{Garbage Collector}a. Aby z niego skorzystać, należy zaimplementować interfejs \texttt{IDisposable}. \emph{ASP.NET Core} potrafi rozpoznać klasy implementujące ten wzorzec i w odpowednim momencie wywołać na nich utylizację\english{Dispose}.
 \end{itemize}
 
 \subsection{Simulation Standard}
