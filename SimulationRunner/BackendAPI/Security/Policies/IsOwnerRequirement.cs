@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Application.Errors;
+using Microsoft.AspNetCore.Authorization;
 using Persistence;
 using System.Security.Claims;
 
@@ -22,7 +23,8 @@ public class IsOwnerRequirementHandler : AuthorizationHandler<IsOwnerRequirement
 	protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsOwnerRequirement requirement)
 	{
 		var currentUserEmail = _httpContextAccessor.HttpContext?.User?.Claims?.SingleOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-		var simulationId = Guid.Parse(_httpContextAccessor.HttpContext?.Request.RouteValues.SingleOrDefault(x => x.Key == "simulationId").Value?.ToString() ?? String.Empty);
+		if (!Guid.TryParse(_httpContextAccessor.HttpContext?.Request.RouteValues.SingleOrDefault(x => x.Key == "simulationId").Value?.ToString() ?? string.Empty, out var simulationId))
+			return Task.CompletedTask;
 		var simulation = _context.Simulations.FindAsync(simulationId).Result;
 		var owner = simulation?.User;
 		if (owner != null && owner.Email == currentUserEmail)
