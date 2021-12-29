@@ -197,10 +197,12 @@
 	\item uzyskanie informacji o użytkowniku
 	\item wgranie symulacji
 	\item uzyskanie informacji o wgranych wcześniej symulacjach
-	\item uruchomienie symulacji
+	\item uruchomienie symulacji, korzystając z podanych parametrów
 	\item uzyskanie wszystkich wyników symulacji
 	\item uzyskanie jednego, wybranego wyniku symulacji.
 \end{itemize}
+
+\par \emph{Endpoint}y zwracają zarówno odpowiedni kod statusu \texttt{HTTP}\english{HTTP Status Code}, ale również odpowiedzi w formacie \emph{JSON}. Z niektórych \emph{endpoint}ów można korzystać bez odpowiedniego upoważnienia\english{Authorization}, jednak większość z nich wymaga posiadania konta użytkownika. Aby poprawnie przejść przez proces uwierzytelniania, musimy wraz z zapytaniem przesłać odpowiedni token. Token ten jest ważny przez z góry określoną ilość czasu i aby go odświeżyć, należy wysłać zapytanie do \emph{/api/User}.
 
 \par Dzięki skorzystaniu z technologii \emph{Swagger} została wygenerowana również specjalna strona internetowa, przy użyciu której można sprawdzić wszystkie dostępne \emph{endpoint}y, wraz z przykładami ich użycia oraz przykładowymi odpowiedziami ze strony serwera (więcej informacji na ten temat można znaleźć w sekcji \ref{subsec:swagger}). Strona ta jest dostępna pod adresem: \emph{https://\texttt{ADRES SERWERA}/swagger/index.html}.
 
@@ -210,6 +212,25 @@
 \end{figure}
 
 \section{Obsługa błędów}
+
+\par Aplikacje komputerowe powinny być tworzone z myślą o obsłudze potencjalnych błędów. Przez błędy mamy tutaj na myśli zarówno błędy po stronie użytkownika, jak i błędy, za które odpowiedzialny jest serwer. Taki też podział zastosowano w tym projekcie. Aby obsłużyć w odpowiedni sposób wszystkie sytuacje wyjątkowe, wykorzystano tutaj mechanizm wyjątków\english{Exceptions}.
+
+\par Błędy użytkownika można podzielić na dwa rodzaje:
+\begin{itemize}
+	\item związane z odpowiednimi upoważnieniami
+	\item związane z niepoprawnymi danymi lub niepoprawnym ich formatem.
+\end{itemize}
+Pierwsze z nich są obsługiwane przez mechanizm upoważniania z \emph{ASP.NET Core}, który dzięki dodaniu odpowiedniej polityki\english{Policy}, weryfikuje czy dany użytkownik istnieje, jak i to czy jest właścicielem danej symulacji. W przypadku błędu, system zwróci odpowiedni kod, czyli \emph{Unauthorized} lub \emph{Forbidden} w zależności od etapu na jakim wystąpiło niepowodzenie. Drugi rodzaj jest natomiast obsługiwany na etapie dalszej walidacji i wykonywania danego zapytania. W przypadku błędu zwróci on odpowiedni kod (\emph{Bad Request}), jak i informację na temat błędu. Dla przykładu, gdy odpowiedni \emph{Run Attempt} nie zostanie odnaleziony, odpowiedzią od serwera będzie \texttt{400 Bad Request} i następujący \emph{JSON}.
+
+\begin{lstlisting}
+{
+	"errors": {
+		"RunAttempt": "Not found."
+	}
+}
+\end{lstlisting}
+
+\par Jeżeli w trakcie obsługi zapytania wystąpi inny błąd, to zostanie do użytkownika zwrócona odpowiednia informacja oraz \texttt{500 Internal Server Error}. Odpowiedni \emph{stack-trace} zostanie wyświetlony w konsoli i jeżeli będzie istnieć taka możliwość, to aplikacja podejmie próbę kontynuacji swojego działania. Dotyczy to się również innych błędów mogących wystąpić bez ingerencji użytkownika, na przykład w trakcie działania \emph{Docker Watch Service}.
 
 \section{Prezentacja działania aplikacji}
 
