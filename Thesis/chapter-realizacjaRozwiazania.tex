@@ -13,6 +13,7 @@
 	\includegraphics[width=\linewidth]{Component Communication Diagram}
 	\caption{Diagram komunikacji między komponentami}
 	\label{fig:componentCommunicationDiagram}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \par Na załączonym powyżej diagramie \ref{fig:componentCommunicationDiagram}, widzimy w jaki sposób komunikują się pomiędzy sobą poszczególne komponenty. Użytkownik wchodzi w interakcję tylko z warstwą \emph{API}, która zajmuje się tylko i wyłącznie obsługą zapytań. Całość logiki biznesowej została oddelegowana do warstwy aplikacji. Ta też warstwa (a konkretnie jej komponent \emph{Docker Container Manger}) jest odpowiedzialna za uruchamianie i zarządzanie kontenerami \emph{\docker{}}a.
@@ -31,6 +32,7 @@
 	\includegraphics[width=\linewidth]{Solution Structure Diagram}
 	\caption{Diagram Struktury Solucji}
 	\label{fig:solutionStructureDiagram}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \par \emph{Docker-Compose} zawiera wszystkie potrzebne informacje do uruchomienia całości rozwiązania, w formie kontenerów \emph{\docker{}}. Umożliwia to uruchomienie aplikacji nie posiadając zainstalowanej platformy \emph{\dotnet{}}, jako iż wszystkie wymagane komponenty zostaną automatycznie pobrane i dodane do odpowiedniego obrazu \emph{\docker{}}.
@@ -72,6 +74,7 @@
 	\includegraphics[width=\linewidth]{Simulation Standard Main Diagram}
 	\caption{Simulation Standard}
 	\label{fig:simulationStandard}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \par Na załączonym powyżej diagramie (\ref{fig:simulationStandard}) widzimy relację pomiędzy poszczególnymi interfejsami i klasami. Kluczowymi elementami są tutaj \texttt{ISimulationBuilder} oraz \texttt{ISimulation}. Konstruktor ten pozwala, bazując na instancji \texttt{ISimulationParams}, stworzyć symulację, która uruchomiona, zwróci rezultat swojego działania. Zarówno parametry, jak i rezultaty powinny być zgodne z zdefiniowanym szablonem\english{Template}. Powodem tego jest konieczność posiadania dodatkowej informacji potrzebnej do późniejszego poprawnego odtworzenia danych po ich serializacji, jak i w przypadku parsowania zapytania z treścią w formacie \emph{JSON}.
@@ -86,6 +89,7 @@
 	\includegraphics[width=\linewidth]{Simulation Standard Templates Diagram}
 	\caption{Simulation Standard Templates}
 	\label{fig:simulationStandardTemplates}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \subsection{Docker Container Manager}
@@ -105,6 +109,7 @@
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Docker Watch Service Setps}
 	\caption{Docker Watch Service - Schemat Blokowy}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \par Wszystkie te informacje, można zreasumować w postaci cyklu życia kontenera.
@@ -112,6 +117,7 @@
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Container Lifecycle}
 	\caption{Cykl Życia Kontenera}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \subsection{Schemat Bazy Danych}
@@ -121,6 +127,7 @@
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Database Schema Diagram}
 	\caption{Schemat Bazy Danych}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \par Do jego reprezentacji postanowiono zastosować tak zwaną \emph{Crow's Foot Notation}. Przy procesie tworzenie użyto podejścia \emph{Code First}, co oznacza, że klasy stworzone w \texttt{C\#} są mapowane do odpowiednich tabel. Na schemacie pominięto mniej znaczące elementy (dla przykładu, jako iż klasa \texttt{User} dziedziczy po \texttt{IdentityUser} to jej tabela zawiera informacje potrzebne do pełnego odtworzenia również obiektów tej klasy), aby zachować jego czytelność.
@@ -146,6 +153,7 @@
 	\includegraphics[width=\linewidth]{Configuration Variants Diagram}
 	\caption{Wizualizacja Wariantów Konfiguracji}
 	\label{fig:wizualizacjaWariantowKonfiguracji}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \par Przed uruchomieniem wymagane jest również stworzenie odpowiedniego obrazu \emph{\docker{}}a na bazie pliku \emph{Dockerfile} znajdującego się w projekcie \emph{SimulationRunnerService}. Można tego dokonać przy użyciu komendy:
@@ -209,6 +217,7 @@
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Swagger Presentation}
 	\caption{Prezentacja Swaggera}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \par Wartym dodatkowej uwagi jest \emph{endpoint}: \texttt{POST} \emph{/api/Simulation}, ze względu na to, iż weryfikuje on zawartość przesłanego pliku i sprawdza jego zgodność ze standardem. Wykonuje on testy na to, czy zostały zaimplementowane \texttt{ISimulation} oraz \texttt{ISimulationBuilder}, czy istnieje bezparametrowy konstruktor oraz tworzy odpowiednie szablony dla parametrów i rezultatów symulacji. Co za tym wszystkim idzie, wczytuje on przesłany plik i uruchamia kod pochodzący z niego. \emph{Endpoint} ten niestety nie deleguje tego zadania do specjalnego kontenera, ale wykonuje wszystkie działania samodzielnie. Powoduje to istnienie potencjalnej luki bezpieczeństwa. W przypadku chęci udostępnienia tej aplikacji do szerszej publiki, działanie tego \emph{endpoint}u powinno zostać zmienione i również korzystać z konteneryzacji celem bezpiecznego uruchamiania kodu \emph{3\textsuperscript{rd}-party}.
@@ -241,6 +250,7 @@ Pierwsze z nich są obsługiwane przez mechanizm upoważniania z \emph{ASP.NET C
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Postman Simulation Results Correct Request}
 	\caption{Postman - Rezultat prawidłowego zapytania}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \par Prawidłowe działanie aplikacji można również zaobserwować instalując \emph{Docker Desktop} (lub korzystając z innych narzędzi \emph{\docker{}}a na przykład w terminalu). Poniżej przedstawiono dwa zrzuty ekranu pokazujące uruchomione kontenery, a następnie ich usunięcie.
@@ -248,6 +258,7 @@ Pierwsze z nich są obsługiwane przez mechanizm upoważniania z \emph{ASP.NET C
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Docker - Running SimulationRunnerService}
 	\caption{Docker Desktop - Uruchomione, a następnie usunięte kontenery}
+	\source{Opracowanie własne.}
 \end{figure}
 
 \section{Testy}
