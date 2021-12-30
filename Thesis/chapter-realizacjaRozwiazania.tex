@@ -50,6 +50,7 @@
 \par \emph{SimulationStandard} definiuje strukturę jaką powinna spełniać symulacja przygotowana przez użytkownika, jak i jej obsługiwane typy danych parametrów oraz rezultatów. Temu tematowi poświęcona jest sekcja \ref{sec:simulationStandard}.
 
 \subsection{Zastosowane Wzorce Projektowe}
+\label{subsec:zastosowaneWzorceProjektowe}
 
 % TODO Add to bibliography sources for Design Patterns
 \par Wzorce projektowe pozwalają programistom w szybszy sposób zaznajomić się z aplikacją, poprzez dodanie kolejnej warstwy aplikacji, jak i rozwiązać problemy, które już kiedyś zostały rozwiązane. Należy jednak pamiętać, że trzeba umiejętnie z nich korzystać i rozważyć zarówno korzyści, jak i potencjalne mankamenty, które mogą z nich wyniknąć. Mając to na uwadze, zdecydowano się użyć następujących \emph{Design Patterns}.
@@ -57,7 +58,7 @@
 \begin{itemize}
 	\item Model View Controller - jeden z najbardziej rozpowszechnionych wzorców projektowych, mówiących o architekturze aplikacji. Wprowadza on prosty podział odpowiedzialności poszczególnych komponentów programu. Został on wybrany ze względu na swoją adekwatność oraz wsparcie ze strony \emph{ASP.NET Core}.
 	\item Dependency Injection - wzorzec pozwalający na tworzenie luźno-powiązanych ze sobą komponentów\english{Loosely coupled}. Pozwala on na sprawny rozwój oprogramowania, oraz skłania do wprowadzania dodatkowej abstrakcji. Pozwala on na uzyskanie \emph{Inversion of Control}. Dzięki wykorzystaniu \emph{ASP.NET Core} i istniejącego w nim systemu zarządzania serwisami zastosowanie go nie wiązało się z wykonaniem dodatkowej pracy.
-	\item Mediator - wzorzec, według którego lepiej jest gdy istnieje jeden obiekt zarządzający przepływem informacji, niż wiele powiązań pomiędzy mniej znaczącymi elementami. Brak zastosowania tego wzorca, mógłby łatwo doprowadzić do sytuacji, w której kod jest mało czytelny, oraz to wycieków pamięci\english{Memory leak} spowodowanych posiadaniem zbędnych referencji pomiędzy obiektami. Aby sprawnie zastosować ten wzorzec, postanowiona skorzystać z pakietu \emph{MediatR}.
+	\item Mediator - wzorzec, według którego lepiej jest gdy istnieje jeden obiekt zarządzający przepływem informacji, niż wiele powiązań pomiędzy mniej znaczącymi elementami. Brak zastosowania tego wzorca, mógłby łatwo doprowadzić do sytuacji, w której kod jest mało czytelny, oraz do wycieków pamięci\english{Memory leak} spowodowanych istnieniem zbędnych referencji pomiędzy obiektami. Aby sprawnie zastosować ten wzorzec, postanowiona skorzystać z pakietu \emph{MediatR}.
 	\item Data Transfer Object - wzorzec, mający na celu zamiany obiektu, na jego odpowiednik, zawierający tylko wymagane dane. Pozwala to na przesyłanie mniejszej ilości danych, jak i na upewnienie się, że nie zostaną zwrócone, żadne nieporządne informacje, takie jak na przykład hash hasła użytkownika.
 	\item Singleton - jeden z najpopularniejszych wzorców projektowych. Jeżeli jakaś klasa go implementuje, oznacza to, że powinna istnieć tylko jedna jej instancja. W przypadku \emph{ASP.NET Core} istnieje specjalny typ serwisu. Jeżeli z niego skorzystamy, to \emph{framework} podczas korzystania z \emph{Dependency Injection} zapewni istnienie tylko jednego takiego obiektu.
 	\item Disposable - wzorzec wykorzystywany w \texttt{C\#} do odpowiedniego zwalniania zasobów zarówno \emph{managed}, jak i \emph{unmanaged}. Rozwiązuje on problemy takie jak zamknięcie strumieni do plików lub połączenia z bazą danych. Jest on stosowany ze względu na niedeterministyczną naturę \emph{Garbage Collector}a. Aby z niego skorzystać, należy zaimplementować interfejs \texttt{IDisposable}. \emph{ASP.NET Core} potrafi rozpoznać klasy implementujące ten wzorzec i w odpowednim momencie wywołać na nich utylizację\english{Dispose}.
@@ -115,7 +116,7 @@
 \par Wszystkie te informacje, można zreasumować w postaci cyklu życia kontenera.
 
 \begin{figure}[H]
-	\includegraphics[width=\linewidth]{Container Lifecycle}
+	\includegraphics[width=\linewidth, height=0.92\textheight]{Container Lifecycle}
 	\caption{Cykl Życia Kontenera}
 	\source{Opracowanie własne.}
 \end{figure}
@@ -141,8 +142,8 @@
 \par Aplikację webową, można uruchomić w jednym z dwóch możliwych wariantów (więcej informacji można znaleźć w sekcji \ref{subsec:konfiguracja}). Minimalnym wymaganiem jest system z zainstalowanym \emph{\docker}em w wersji:
 
 \begin{itemize}
-	\item \emph{\docker{} Client} - 20.10.11 lub wyższej
-	\item \emph{\docker{} Engine} - 20.10.11 lub wyższej
+	\item \emph{\docker{} Client} - 20.10.11 lub wyższej,
+	\item \emph{\docker{} Engine} - 20.10.11 lub wyższej.
 \end{itemize}
 
 \par Pozwoli to na uruchomienie programu z użyciem \emph{\docker{} Compose}, który skompiluje wszystkie projekty, uruchomi aplikację w kontenerze\english{Container} oraz utworzy odpowiedni kontener dla bazy danych na bazie oficjalnego obrazu\english{Image} \emph{PostgreSQL}. Podejście to zostało przedstawione w postaci grafiki \ref{fig:wizualizacjaWariantowKonfiguracji} jako wariant pierwszy.
@@ -171,27 +172,27 @@
 
 \par Dla plików \emph{appsettings.json}, parametry jakie należy dostarczyć to:
 \begin{itemize}
-	\item \texttt{TokenKey} - Klucz dla tokenów.
-	\item \texttt{JWT}
+	\item \texttt{TokenKey} - klucz dla tokenów,
+	\item \texttt{JWT}:
 	\begin{itemize}
-		\item \texttt{Audience} - odbiorcy tokenu.
-		\item \texttt{Issuer} - nadawca tokenu.
+		\item \texttt{Audience} - odbiorcy tokenu,
+		\item \texttt{Issuer} - nadawca tokenu,
 	\end{itemize}
-	\item \texttt{SimulationRunnerServiceDockerImage} - ID lub nazwa obrazu \emph{\docker{}}
-	\item \texttt{DockerHostContainersPath} - ścieżka dostępu do folderu przeznaczonego na dane kontenerów \onlyConfiguration{1}.
-	\item \texttt{ConnectionStrings}
+	\item \texttt{SimulationRunnerServiceDockerImage} - ID lub nazwa obrazu \emph{\docker{}},
+	\item \texttt{DockerHostContainersPath} - ścieżka dostępu do folderu przeznaczonego na dane kontenerów \onlyConfiguration{1},
+	\item \texttt{ConnectionStrings}:
 	\begin{itemize}
-		\item \texttt{PostgreSQL} - \emph{Connection String} definiujący połączenie z bazą danych \onlyConfiguration{2}.
+		\item \texttt{PostgreSQL} - \emph{Connection String} definiujący połączenie z bazą danych \onlyConfiguration{2},
 		\item \texttt{PostgreSQLDocker} - służy dokładnie temu samemu celowi co \texttt{PostgreSQL}. Aby usprawnić proces rozwijania aplikacji, jak i ułatwić jej testownie, utworzone dwie zmienne \onlyConfiguration{1}.
 	\end{itemize}
 \end{itemize}
 
 \par Dodatkowo należy dostarczyć następujące dane w postaci \emph{\dotnet{} Secret}:
 \begin{itemize}
-	\item \texttt{Postgres}
+	\item \texttt{Postgres}:
 	\begin{itemize}
-		\item \texttt{user} - nazwa użytkownika bazy danych.
-		\item \texttt{password} - hasło użytkownika bazy danych.
+		\item \texttt{user} - nazwa użytkownika bazy danych,
+		\item \texttt{password} - hasło użytkownika bazy danych,
 	\end{itemize}
 	\item \texttt{Kestrel:Certificates:Development:Password} - hasło dla certyfikatu. Zmienna ta może się różnić w zależności od środowiska i certyfikatu jaki jest wykorzystywany. Dla testów użyto \emph{Self-Signed Certificate} wygenerowanego przy użyciu narzędzia \emph{dotnet dev-certs}.
 \end{itemize}
@@ -200,13 +201,13 @@
 
 \par Powstała aplikacja działa jako \emph{API}, co za tym idzie posiada tak zwane \emph{Endpoint}y, czyli adresy \emph{URL}, do których należy się odwołać aby wywołać pożądane działanie lub uzyskać zamierzone dane. Udostępnione zostały \emph{endpoint}y pozwalające na:
 \begin{itemize}
-	\item zarejestrowanie użytkownika
-	\item zalogowanie użytkownika
-	\item uzyskanie informacji o użytkowniku
-	\item wgranie symulacji
-	\item uzyskanie informacji o wgranych wcześniej symulacjach
-	\item uruchomienie symulacji, korzystając z podanych parametrów
-	\item uzyskanie wszystkich wyników symulacji
+	\item zarejestrowanie użytkownika,
+	\item zalogowanie użytkownika,
+	\item uzyskanie informacji o użytkowniku,
+	\item wgranie symulacji,
+	\item uzyskanie informacji o wgranych wcześniej symulacjach,
+	\item uruchomienie symulacji, korzystając z podanych parametrów,
+	\item uzyskanie wszystkich wyników symulacji,
 	\item uzyskanie jednego, wybranego wyniku symulacji.
 \end{itemize}
 
@@ -228,10 +229,10 @@
 
 \par Błędy użytkownika można podzielić na dwa rodzaje:
 \begin{itemize}
-	\item związane z odpowiednimi upoważnieniami
+	\item związane z odpowiednimi upoważnieniami,
 	\item związane z niepoprawnymi danymi lub niepoprawnym ich formatem.
 \end{itemize}
-Pierwsze z nich są obsługiwane przez mechanizm upoważniania z \emph{ASP.NET Core}, który dzięki dodaniu odpowiedniej polityki\english{Policy}, weryfikuje czy dany użytkownik istnieje, jak i to czy jest właścicielem danej symulacji. W przypadku błędu, system zwróci odpowiedni kod, czyli \emph{Unauthorized} lub \emph{Forbidden} w zależności od etapu na jakim wystąpiło niepowodzenie. Drugi rodzaj jest natomiast obsługiwany na etapie dalszej walidacji i wykonywania danego zapytania. W przypadku błędu zwróci on odpowiedni kod (\emph{Bad Request}), jak i informację na temat błędu. Dla przykładu, gdy odpowiedni \emph{Run Attempt} nie zostanie odnaleziony, odpowiedzią od serwera będzie \texttt{400 Bad Request} i następujący \emph{JSON}.
+Pierwsze z nich są obsługiwane przez mechanizm upoważniania z \emph{ASP.NET Core}, który dzięki dodaniu odpowiedniej polityki\english{Policy}, weryfikuje czy dany użytkownik istnieje, jak i to czy jest właścicielem danej symulacji. W przypadku błędu, system zwróci odpowiedni kod, czyli \emph{Unauthorized} lub \emph{Forbidden} w zależności od etapu na jakim wystąpiło niepowodzenie. Drugi rodzaj jest natomiast obsługiwany na etapie dalszej walidacji i wykonywania danego zapytania. W przypadku błędu zwróci on odpowiedni kod (\emph{Bad Request}), jak i informację na temat błędu. Dla przykładu, gdy odpowiedni \emph{Run Attempt} nie zostanie odnaleziony, odpowiedzią od serwera będzie \texttt{400 Bad Request} i następujący obiekt \emph{JSON}.
 
 \begin{lstlisting}
 {
