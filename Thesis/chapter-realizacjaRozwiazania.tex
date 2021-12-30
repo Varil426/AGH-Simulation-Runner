@@ -45,7 +45,7 @@
 
 \par Projekty \emph{Persistence} i \emph{Domain} odpowiadają za przechowywanie danych. Działają one w oparciu o \emph{Entity Framework Core}. Pierwszy z nich odpowiada za rozszerzenie tak zwanego \emph{DbContext}\footnote{Specjalna klasa pochodząca z Entity Framework Core definiująca pewien kontekst danych.}, w którym znajdują się deklaracje kolekcji, które będą mapowane do poszczególnych tabel w bazie danych. Znajdują się tutaj również migracje, wspomagające ciągły rozwój aplikacji, poprzez zapewnianie mechanizmu do prostego aktualizowania przechowywanych danych w wypadku zmiany ich struktury. Projekt \emph{Domain} reprezentuje z kolej poszczególne byty na których operuje nasza aplikacja. Są one bezpośrednio mapowane do odpowiednich rekordów. Warstwa ta została zaprojektowana przy pomocy tak zwanego podejścia \emph{Code First}. Oznacza to, że odpowiednie struktury w bazie danych zostały automatycznie wygenerowane na podstawie zdefiniowanych klas.
 
-\par Zadaniem \emph{SimulationRunnerService}u jest uruchomienie wyznaczonej symulacji z odpowiednimi parametrami oraz późniejsze zapisanie wyników. Serwis ten funkcjonuje jako osobny \emph{\docker Image}, który jest uruchamiany jako kontener przez \texttt{IDockerContainerManager}. Całość komunikacji pomiędzy poszczególną instancją i resztą systemu odbywa się przez system plików (więcej informacji na ten temat znajduje się w sekcji \ref{sec:dockerContainerManager}).
+\par Zadaniem \emph{SimulationRunnerService}u jest uruchomienie wyznaczonej symulacji z odpowiednimi parametrami oraz późniejsze zapisanie wyników. Został on zaimplementowany w oparciu o \texttt{BackgroundService}, który z kolei implementuje \texttt{IHostedService}.\cite{DOTNET_HOSTED_SERVICE} Serwis ten funkcjonuje jako osobny \emph{\docker Image}, który jest uruchamiany jako kontener przez \texttt{IDockerContainerManager}. Całość komunikacji pomiędzy poszczególną instancją i resztą systemu odbywa się przez system plików (więcej informacji na ten temat znajduje się w sekcji \ref{sec:dockerContainerManager}).
 
 \par \emph{SimulationStandard} definiuje strukturę jaką powinna spełniać symulacja przygotowana przez użytkownika, jak i jej obsługiwane typy danych parametrów oraz rezultatów. Temu tematowi poświęcona jest sekcja \ref{sec:simulationStandard}.
 
@@ -193,7 +193,7 @@
 		\item \texttt{user} - nazwa użytkownika bazy danych,
 		\item \texttt{password} - hasło użytkownika bazy danych,
 	\end{itemize}
-	\item \texttt{Kestrel:Certificates:Development:Password} - hasło dla certyfikatu. Zmienna ta może się różnić w zależności od środowiska i certyfikatu jaki jest wykorzystywany. Dla testów użyto \emph{Self-Signed Certificate} wygenerowanego przy użyciu narzędzia \emph{dotnet dev-certs}.
+	\item \texttt{Kestrel:Certificates:Development:Password} - hasło dla certyfikatu. Zmienna ta może się różnić w zależności od środowiska i certyfikatu jaki jest wykorzystywany. Dla testów użyto \emph{Self-Signed Certificate} wygenerowanego przy użyciu narzędzia \emph{dotnet dev-certs}.\cite{DOTNET_SELFSIGNED_CERTIFICATE}
 \end{itemize}
 
 Aby tego dokonać, należy skorzystać z \emph{Secret Manager}a.\cite{DOTNET_SECRET_MANAGER}
