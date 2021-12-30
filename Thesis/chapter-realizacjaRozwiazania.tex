@@ -68,7 +68,7 @@
 
 \par Aby poprawnie uruchamiać dostarczony kod, wymagane było stworzenie standardu, który określałby wymagania jak i ograniczenia dotyczące dostarczanych plików. W tym celu powstał \emph{Simulation Standard}. Jest to biblioteka zawierająca interfejsy i podstawowe ich implementacje, obiektów potrzebnych do poprawnej inicjalizacji instancji symulacji.
 
-\par Od użytkownika wymaga się aby zaimplementował \emph{ISimulationBuilder}, który zwróci symulację. Implementacja ta powinna posiadać przynajmniej jeden bezparametrowy konstruktor.
+\par Od użytkownika wymaga się, aby zaimplementował \emph{ISimulationBuilder}, który zwróci symulację. Implementacja ta powinna posiadać przynajmniej jeden bezparametrowy konstruktor.
 
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Simulation Standard Main Diagram}
@@ -267,12 +267,27 @@ Pierwsze z nich są obsługiwane przez mechanizm upoważniania z \emph{ASP.NET C
 
 \section{Testy}
 
-% TODO
-TODO
-
 \subsection{Testy funkcjonalności związanej z obsługą użytkownika}
 
+\par W ramach testowania funkcjonalności związanej z obsługą użytkownika wykonano testy polegające między innymi na:
+\begin{itemize}
+	\item stworzeniu nowego konta:
+	\begin{itemize}
+		\item z poprawnymi danymi,
+		\item z niepoprawnymi lub brakującymi danymi,
+	\end{itemize}
+	\item logowaniu się,
+	\item próbie uzyskanie dostępu do danych bez odpowiednich upoważnień,
+	\item wgraniu różnych pliku z symulacjami do systemu, jak i plików zawierających niepoprawne dane.
+\end{itemize}
+
+Wszystkie testy zakończyły się powodzeniem. Uzyskano oczekiwane rezultaty w formie odpowiedzi ze strony serwera oraz odpowiedniego kodu \emph{HTTP}.
+
 \subsection{Mock Simulation}
+
+\par Aby przetestować działanie aplikacji, została stworzona specjalna symulacja. Miała ona za zadanie wczytanie danych różnych typów, odczekanie pewnej ilości czasu aby zasymulować działanie realnej symulacji oraz stworzenie rezultatów swojego działania bazując na danych wejściowych. Z symulacji tej korzystano w trakcie rozwoju aplikacji. Poniżej prezentowane jest przykładowe uruchomienie oraz wyniki uzyskane.
+
+TODO % TODO
 
 \subsection{Rabbit Island Simulation}
 
