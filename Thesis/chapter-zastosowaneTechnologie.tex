@@ -20,7 +20,7 @@
 \subsection{Swagger}
 \label{subsec:swagger}
 
-TODO % TODO
+\par \emph{Swagger} jest narzędziem do generowania dokumentacji, interfejsu, który pozwala zagłębić się w tę dokumentację, jak i przykładowych danych wejściowych i wyjściowych. Narzędzie to zostało wybrane aby usprawnić proces dokumentowania stworzonej aplikacji. Dodatkowym atutem jest możliwość integracji z \emph{Netonsoft JSON}, czyli inną biblioteką wykorzystaną w tym projekcie.
 
 \subsection{Docker.Dotnet}
 
@@ -29,10 +29,10 @@ TODO % TODO
 \subsection{Pozostałe biblioteki}
 
 \begin{itemize}
-	\item MediatR TODO Description % TODO
-	\item AutoMapper TODO Description % TODO
-	\item FluentValidation TODO Description % TODO
-	\item Newtonsoft JSON TODO Description % TODO
+	\item MediatR - prosta biblioteka implementująca wzorzec projektowy \emph{Mediator}. Wspiera ona \emph{request/response}, polecenia\english{Commands}, \emph{query}, powiadomienia\english{Notifications} oraz wydarzenia\english{Events}. Dodatkowo może działać zarówno synchronicznie, jak i asynchronicznie. Więcej informacji na temat tego wzorca, można znaleźć w sekcji \ref{subsec:zastosowaneWzorceProjektowe}.
+	\item AutoMapper - biblioteka pozwalająca na automatyczne mapowanie właściwości obiektów. Jej główną zaletą jest możliwość szybkiego tworzenia nowych instancji (na przykład DTO\footnote{Data Transfer Object}), bez konieczności samodzielnej implementacji generycznych fragmentów kodu.
+	\item FluentValidation - weryfikacja dostarczonych danych jest koniecznością podczas tworzenia oprogramowania, w interakcję z którym, wchodzi użytkownik. Istotnym elementem, jest aby takowa weryfikacja była projektowana, według pewnego wzorca i przystępna do modyfikacji w przyszłości. Problemy te rozwiązuje biblioteka \emph{FluentValidation}. Dostarcza ona narzędzia, które pozwalają tworzyć zestawy reguł, na bazie których nastąpi później, na przykład weryfikacja zapytania.
+	\item Newtonsoft JSON - biblioteka zawierająca narzędzia wspomagające działanie na obiektach zapisanych w formacie \emph{JSON}. Zapewnia ona funkcjonalność potrzebną do serializacji, jak i deserializacji z dodatkową możliwością przechowywania informacji o typie danych. Pozwala to na dokładne odtworzenie konkretnych instancji.
 \end{itemize}
 
 \section{\docker}
