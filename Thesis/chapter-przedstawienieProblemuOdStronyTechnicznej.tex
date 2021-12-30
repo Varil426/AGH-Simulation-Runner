@@ -5,9 +5,16 @@
 
 \section{API jako interfejs dla Aplikacji Webowej}
 
-% TODO Find some research regarding increase of popularitry of mobile and web technologies.
 \par Podejście do tworzenia oprogramowania bardzo się zmieniło w przeciągu ostatnich dziesięciu lat. Głównie za sprawą rozwoju infrastruktury sieciowej, zapewniającej dostęp do lepszej jakości połączenia internetowego użytkownikom, jak i ogromy wzrost popularności urządzeń mobilnych sprawił, że niegdyś dominująca forma tworzenia aplikacji, to znaczy aplikacje desktopowe, ustąpiły na rzecz usług czysto webowych, lub lekkich klientów które służą wyłącznie jako interfejs graficzny do interakcji z oprogramowaniem działającym na serwerze.
-% TODO Add image from http://www.exe.com.pl/plusy-i-minusy-cienkiego-klienta/
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics{Thick Thin Client}
+	\end{center}
+	\caption{Lekki i obszerny klient}
+	\source{http://www.exe.com.pl/plusy-i-minusy-cienkiego-klienta/}
+\end{figure}
+
 Rozwiązanie to pozwala na o wiele większą swobodę w tworzeniu GUI \footnote{\emph{Graphical User Interface}}, które poprzez wykorzystywanie elementów graficznych często jest mocno związane z platformą na jakiej działa.
 
 \par Dzięki rozdzieleniu tych dwóch elementów, możliwe jest stworzenie lekkiego klienta, na wybranej platformie (tak długo jak posiada ona dostęp do internetu oraz obsługuje protokół \texttt{\https{}}). Aplikacja graficzna, która wykorzystuje takie rozwiązanie jest bardzo lekka (brak konieczności dołączania dodatkowego oprogramowania np. serwera bazy danych), dzięki czemu nadaje się do działania na platformach mobilnych i/lub w przeglądarce, co z kolej prowadzi do zwiększenia potencjalnej liczby odbiorców naszego oprogramowania. Po drugiej stronie znajduje się natomiast API \footnote{\emph{Application Programming Interface}}, pełniący rolę serwera. Aplikacje klienckie łączą się z nim w celu wykonywania poszczególnych żądań, jak i uzyskania danych.
@@ -16,8 +23,7 @@ Rozwiązanie to pozwala na o wiele większą swobodę w tworzeniu GUI \footnote{
 
 \section{Symulacje}
 
-% TODO Find source regarding simulation types
-\par Symulacje komputerowe są tworzone w różnych celach. Przy ich pomocy inżynierowie mogą próbować określić wytrzymałość mostu, testować aerodynamikę samolotu lub przewidywać jak zmieni się ruch w mieście, gdy zamkniemy jedną ulicę na czas remontu, naukowcy mogą symulować ruch ciał niebieskich lub tworzyć prognozy rozprzestrzeniania się choroby w zależności od różnych zmiennych, a nauczyciele prezentować wizualizacje zjawisk fizycznych uczniom. Do tego symulacje dzielą się na dyskretne jak i ciągłe w czasie, deterministyczne i stochastyczne lub lokalne i rozproszone. Zagadnienie to jest bardzo złożone i obsłużenie wszystkich przypadków jest niezwykle trudne.
+\par Symulacje komputerowe są tworzone w różnych celach. Przy ich pomocy inżynierowie mogą próbować określić wytrzymałość mostu, testować aerodynamikę samolotu lub przewidywać jak zmieni się ruch w mieście, gdy zamkniemy jedną ulicę na czas remontu, naukowcy mogą symulować ruch ciał niebieskich lub tworzyć prognozy rozprzestrzeniania się choroby w zależności od różnych zmiennych, a nauczyciele prezentować wizualizacje zjawisk fizycznych uczniom. Do tego symulacje dzielą się na dyskretne jak i ciągłe w czasie, deterministyczne i stochastyczne\cite{mchaney1991computer} lub lokalne i rozproszone. Zagadnienie to jest bardzo złożone i obsłużenie wszystkich przypadków jest niezwykle trudne.
 
 \par Chcąc zapewnić jak największą swobodę użytkownikom, jak i mając na uwadze bezpieczeństwo naszego systemu trzeba ustalić pewne ograniczenia i kompromisy. Zdefiniowanie pewnego wspólnego interfejsu jest konieczne, aby zapewnić komunikację z instancją danej symulacji, w celu uruchomienia jej z ustalonymi parametrami, ale też by wyniki takiej symulacji zebrać i zachować do późniejszej prezentacji.
 
