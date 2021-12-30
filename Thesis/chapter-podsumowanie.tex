@@ -10,8 +10,14 @@
 \section{Możliwy dalszy rozwój}
 \label{sec:mozliwyDalszyRozwoj}
 
-TODO % TODO
-
 \subsection{Wersjonowanie Simulation Standardu}
 
-\subsection{Remote Docker Host} % TODO Easy job, just start one serivce one that host that would present you all files
+\par W dalszym rozwoju zaprezentowanej w tej pracy aplikacji wymagany byłby system wersjonowania \emph{Simulation Standard}u. Główną zaletą takiego podejścia byłaby kompatybilność wsteczna\english{Backward Compatibility}. Jeżeli aplikacja zostałaby uruchomiona dla użytkowników, to niepożądanym rezultatem byłaby niemożliwość uruchomienia stworzonego wcześniej oprogramowania. Z dokładnie tego samego powodu różne wersje \emph{API} często działają równolegle.
+
+\subsection{Remote Docker Host}
+
+\par Innym dość oczywistym rozszerzeniem jest zastosowanie \emph{Docker Host}a, który działałby na innej maszynie. Otworzyłoby to dodatkowo drogę do uruchomienia takiego serwisu na większej ilości urządzeń, co z kolei pozwoliłoby na lepsze skalowanie się systemu, jak i na zwiększenie jego stabilności, poprzez mniejszą zależność od konkretnej maszyny. Możliwą implementacją byłoby uruchomianie specjalnego serwisu na każdym z urządzeń, który przygotowywałby odpowiednie pliki po ich otrzymaniu (na przykład za pośrednictwem protokołu \texttt{HTTPS}) lub pobierał je bezpośrednio z bazy danych.
+
+\subsection{Udostępnienie Simulation Standardu jako pakiet NuGet}
+
+\par Jako iż przygotowany standard został upubliczniony na \emph{GitHub}ie w formie \emph{Open Source}, to nie istnieją żadne przeciwwskazania przed udostępnieniem go jako pakiet \emph{NuGet}\footnote{Menadżer pakietów używany w środowisku \emph{\dotnet{}}}. Ułatwiłoby to dostęp do najnowszej wersji (jak i poprzednich) dla użytkowników, jak i zapewniło prosty mechanizm do aktualizowania wersji standardu używanej w projektach.
