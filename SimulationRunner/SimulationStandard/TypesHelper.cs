@@ -11,20 +11,12 @@ public static class TypesHelper
     {
         AllowedTypes = ImmutableHashSet.CreateRange(new HashSet<Type>
         {
-            typeof(short),
-            typeof(int),
             typeof(long),
-            typeof(float),
             typeof(double),
-            typeof(decimal),
             typeof(bool),
             typeof(string),
-            typeof(IList<short>),
-            typeof(IList<int>),
             typeof(IList<long>),
-            typeof(IList<float>),
             typeof(IList<double>),
-            typeof(IList<decimal>),
             typeof(IList<bool>),
             typeof(IList<string>),
         });
