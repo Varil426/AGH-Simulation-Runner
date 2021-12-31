@@ -37,7 +37,6 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
         await StoreSimulationResults(results);
         await RemoveDockerContainers(results.Select(x => x.Value.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing container name.")));
 
-        // TODO I changed SimulationStandard. Need to update simualtions.
         // TODO Add queuing logic
         // TODO Get container error and store it in DB. Update thesis.
         // TODO Change handling of BLOBs (separate DB? File system? some other system?)

@@ -69,7 +69,7 @@ public class SimulationHandler : ISimulationHandler
     public ISimulationParams CreateSimulationParams(string json)
     {
         using var reader = CreateJsonReader(json);
-        return _jsonSerializer.Deserialize<SimulationParams>(reader) ?? throw new ArgumentException("Invalid JSON");
+        return new SimulationParams { Params = _jsonSerializer.Deserialize<SimulationValuesDictionary>(reader) ?? throw new ArgumentException("Invalid JSON") };
     }
 
     public ISimulationParamsTemplate CreateSimulationParamsTemplate(string json)
@@ -81,7 +81,7 @@ public class SimulationHandler : ISimulationHandler
     public ISimulationResults CreateSimulationResults(string json)
     {
         using var reader = CreateJsonReader(json);
-        return _jsonSerializer.Deserialize<SimulationResults>(reader) ?? throw new ArgumentException("Invalid JSON");
+        return new SimulationResults { Results = _jsonSerializer.Deserialize<SimulationValuesDictionary>(reader) ?? throw new ArgumentException("Invalid JSON") };
     }
 
     public ISimulationResultsTemplate CreateSimulationResultsTemplate(string json)
@@ -90,8 +90,8 @@ public class SimulationHandler : ISimulationHandler
         return _jsonSerializer.Deserialize<SimulationResultsTemplate>(reader) ?? throw new ArgumentException("Invalid JSON");
     }
 
-    public string ToJson(ISimulationParams simulationParams) => SerializeObject(simulationParams);
-    public string ToJson(ISimulationResults simulationResults) => SerializeObject(simulationResults);
+    public string ToJson(ISimulationParams simulationParams) => SerializeObject(simulationParams.Params);
+    public string ToJson(ISimulationResults simulationResults) => SerializeObject(simulationResults.Results);
     public string ToJson(ISimulationParamsTemplate simulationParamsTemplate) => SerializeObject(simulationParamsTemplate);
     public string ToJson(ISimulationResultsTemplate simulationResultsTemplate) => SerializeObject(simulationResultsTemplate);
 

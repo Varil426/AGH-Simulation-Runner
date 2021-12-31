@@ -119,7 +119,7 @@ if (app.Environment.IsDevelopment())
 
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
-    var context = serviceScope.ServiceProvider.GetService<DataContext>();
+    using var context = serviceScope.ServiceProvider.GetService<DataContext>();
     context?.Database.Migrate();
 }
 
