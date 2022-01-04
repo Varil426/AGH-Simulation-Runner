@@ -7,7 +7,7 @@
 
 \section{Architektura}
 
-\par Odpowiedni podział odpowiedzialności i ustalenie komunikacji między komponentami było jednym z najważniejszych elementów całego projektu. Każdy z komponentów powinien spełniać jasno określone zadania, oraz pewną abstrakcję aby w przypadku późniejszych modyfikacji dało się je łatwo zastąpić. Z tą myślą powstał projekt systemu. Inspiracją dla niego był artykuł z 2011 roku pod tytułem "\emph{Simulation Platform: A cloud-based online simulation environment}"\cite{YAMAZAKI2011693}. Prezentuje on podobną ideę, ale wykorzystując do wirtualizacji \emph{Oracle VirtualBox}.
+\par Odpowiedni podział odpowiedzialności i ustalenie komunikacji między komponentami było jednym z najważniejszych elementów całego projektu. Każdy z komponentów powinien spełniać jasno określone zadania, oraz pewną abstrakcję, aby w przypadku późniejszych modyfikacji dało się je łatwo zastąpić. Z tą myślą powstał projekt systemu. Inspiracją dla niego był artykuł z 2011 roku pod tytułem "\emph{Simulation Platform: A cloud-based online simulation environment}"\cite{YAMAZAKI2011693}. Prezentuje on podobną ideę, ale wykorzystując do wirtualizacji \emph{Oracle VirtualBox}.
 
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Component Communication Diagram}
@@ -26,7 +26,7 @@
 
 \subsection{Struktura Solucji}
 
-\par W \emph{\dotnet{}} istnieje koncept tak zwanych \emph{solucji}\english{Solutions}. Mają one na celu zgromadzenie w sobie projektów, które razem tworzą rozwiązanie danego zagadnienia. Podejście to pozwala na wyrazisty podział kodu, jak i na wielokrotne jego użycie, zgodne z zasadą \emph{DRY}\footnote{Don't Repeat Yourself}. Odpowiednia zaplanowanie naszego rozwiązania potrafi znacząco przyśpieszyć pracę.
+\par W \emph{\dotnet{}} istnieje koncept tak zwanych \emph{solucji}\english{Solutions}. Mają one na celu zgromadzenie w sobie projektów, które razem tworzą rozwiązanie danego zagadnienia. Podejście to pozwala na wyrazisty podział kodu, jak i na wielokrotne jego użycie, zgodne z zasadą \emph{DRY}\footnote{Don't Repeat Yourself}. Odpowiednie zaplanowanie naszego rozwiązania potrafi znacząco przyśpieszyć pracę.
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{Solution Structure Diagram}
@@ -41,26 +41,26 @@
 
 \par \emph{Application} jest głównym projektem, który spina wszystkie pozostałe. Znajduje się w nim cała logika biznesowa. Odpowiada on za między innymi tworzenie użytkowników i ich autoryzację, zbieranie parametrów i wyników symulacji oraz obsługę pozostałych zapytań, w tym tych związanych z kontenerami (więcej informacji na ten temat znajduje się w sekcjach \ref{sec:dockerContainerManager} i \ref{sec:dockerWatchService}).
 
-\par Odpowiedzialność związana z obsługą symulacji dostarczonych przez użytkowników należy do \emph{SimulationHandler}. Znajduje się tutaj interfejs \texttt{ISimulationHandler} i jego implementację. Klasa ta potrafi tworzyć obiekty \emph{SimulationStandard}, w tym przeprowadzać ich serializację i deserializację. Kolejną istotną cechą jest dynamiczne ładowanie i rozładowanie tak zwanych \emph{Assemblies}, jak i sprawdzanie ich poprawność i zgodności z \emph{SimulationStandard}.
+\par Odpowiedzialność związana z obsługą symulacji dostarczonych przez użytkowników należy do \emph{SimulationHandler}. Znajduje się tutaj interfejs \texttt{ISimulationHandler} i jego implementacja. Klasa ta potrafi tworzyć obiekty \emph{SimulationStandard}, w tym przeprowadzać ich serializację i deserializację. Kolejną istotną cechą jest dynamiczne ładowanie i rozładowanie tak zwanych \emph{Assemblies}, jak i sprawdzanie ich poprawności i zgodności z \emph{SimulationStandard}.
 
-\par Projekty \emph{Persistence} i \emph{Domain} odpowiadają za przechowywanie danych. Działają one w oparciu o \emph{Entity Framework Core}. Pierwszy z nich odpowiada za rozszerzenie tak zwanego \emph{DbContext}\footnote{Specjalna klasa pochodząca z Entity Framework Core definiująca pewien kontekst danych.}, w którym znajdują się deklaracje kolekcji, które będą mapowane do poszczególnych tabel w bazie danych. Znajdują się tutaj również migracje, wspomagające ciągły rozwój aplikacji, poprzez zapewnianie mechanizmu do prostego aktualizowania przechowywanych danych w wypadku zmiany ich struktury. Projekt \emph{Domain} reprezentuje z kolej poszczególne byty na których operuje nasza aplikacja. Są one bezpośrednio mapowane do odpowiednich rekordów. Warstwa ta została zaprojektowana przy pomocy tak zwanego podejścia \emph{Code First}. Oznacza to, że odpowiednie struktury w bazie danych zostały automatycznie wygenerowane na podstawie zdefiniowanych klas.
+\par Projekty \emph{Persistence} i \emph{Domain} odpowiadają za przechowywanie danych. Działają one w oparciu o \emph{Entity Framework Core}. Pierwszy z nich odpowiada za rozszerzenie tak zwanego \emph{DbContext}\footnote{Specjalna klasa pochodząca z Entity Framework Core definiująca pewien kontekst danych.}, w którym znajdują się deklaracje kolekcji, które będą mapowane do poszczególnych tabel w bazie danych. Znajdują się tutaj również migracje, wspomagające ciągły rozwój aplikacji, poprzez zapewnianie mechanizmu do prostego aktualizowania przechowywanych danych w wypadku zmiany ich struktury. Projekt \emph{Domain} reprezentuje z kolei poszczególne byty, na których operuje nasza aplikacja. Są one bezpośrednio mapowane do odpowiednich rekordów. Warstwa ta została zaprojektowana przy pomocy tak zwanego podejścia \emph{Code First}. Oznacza to, że odpowiednie struktury w bazie danych zostały automatycznie wygenerowane na podstawie zdefiniowanych klas.
 
-\par Zadaniem \emph{SimulationRunnerService}u jest uruchomienie wyznaczonej symulacji z odpowiednimi parametrami oraz późniejsze zapisanie wyników. Został on zaimplementowany w oparciu o \texttt{BackgroundService}, który z kolei implementuje \texttt{IHostedService}.\cite{DOTNET_HOSTED_SERVICE} Serwis ten funkcjonuje jako osobny \emph{\docker Image}, który jest uruchamiany jako kontener przez \texttt{IDockerContainerManager}. Całość komunikacji pomiędzy poszczególną instancją i resztą systemu odbywa się przez system plików (więcej informacji na ten temat znajduje się w sekcji \ref{sec:dockerContainerManager}).
+\par Zadaniem \emph{SimulationRunnerService}u jest uruchomienie wyznaczonej symulacji z odpowiednimi parametrami oraz późniejsze zapisanie wyników. Został on zaimplementowany w oparciu o \texttt{BackgroundService}, który z kolei implementuje \texttt{IHostedService}\cite{DOTNET_HOSTED_SERVICE}. Serwis ten funkcjonuje jako osobny \emph{\docker Image}, który jest uruchamiany jako kontener przez \texttt{IDockerContainerManager}. Całość komunikacji pomiędzy poszczególnymi instancjami i resztą systemu odbywa się przez system plików (więcej informacji na ten temat znajduje się w sekcji \ref{sec:dockerContainerManager}).
 
 \par \emph{SimulationStandard} definiuje strukturę jaką powinna spełniać symulacja przygotowana przez użytkownika, jak i jej obsługiwane typy danych parametrów oraz rezultatów. Temu tematowi poświęcona jest sekcja \ref{sec:simulationStandard}.
 
 \subsection{Zastosowane Wzorce Projektowe}
 \label{subsec:zastosowaneWzorceProjektowe}
 
-\par Wzorce projektowe pozwalają programistom w szybszy sposób zaznajomić się z aplikacją, poprzez dodanie kolejnej warstwy aplikacji, jak i rozwiązać problemy, które już kiedyś zostały rozwiązane. Należy jednak pamiętać, że trzeba umiejętnie z nich korzystać i rozważyć zarówno korzyści, jak i potencjalne mankamenty, które mogą z nich wyniknąć. Mając to na uwadze, zdecydowano się użyć następujących \emph{Design Patterns}.
+\par Wzorce projektowe pozwalają programistom w szybszy sposób zaznajomić się z aplikacją, poprzez dodanie kolejnej warstwy abstrakcji, jak i w prosty sposób rozwiązać problemy, które już kiedyś zostały rozwiązane i ustandaryzowane. Należy jednak pamiętać, że trzeba umiejętnie z nich korzystać i rozważyć zarówno korzyści, jak i potencjalne mankamenty, które mogą z nich wyniknąć. Mając to na uwadze, zdecydowano się użyć następujących \emph{Design Patterns}.
 
 \begin{itemize}
 	\item Model View Controller - jeden z najbardziej rozpowszechnionych wzorców projektowych, mówiących o architekturze aplikacji. Wprowadza on prosty podział odpowiedzialności poszczególnych komponentów programu. Został on wybrany ze względu na swoją adekwatność oraz wsparcie ze strony \emph{ASP.NET Core}.
-	\item Dependency Injection - wzorzec pozwalający na tworzenie luźno-powiązanych ze sobą komponentów\english{Loosely coupled}. Pozwala on na sprawny rozwój oprogramowania, oraz skłania do wprowadzania dodatkowej abstrakcji. Pozwala on na uzyskanie \emph{Inversion of Control}. Dzięki wykorzystaniu \emph{ASP.NET Core} i istniejącego w nim systemu zarządzania serwisami zastosowanie go nie wiązało się z wykonaniem dodatkowej pracy.
-	\item Mediator - wzorzec, według którego lepiej jest gdy istnieje jeden obiekt zarządzający przepływem informacji, niż wiele powiązań pomiędzy mniej znaczącymi elementami.\cite{GOF_DESIGN_PATTERNS} Brak zastosowania tego wzorca, mógłby łatwo doprowadzić do sytuacji, w której kod jest mało czytelny, oraz do wycieków pamięci\english{Memory leak} spowodowanych istnieniem zbędnych referencji pomiędzy obiektami. Aby sprawnie zastosować ten wzorzec, postanowiona skorzystać z pakietu \emph{MediatR}.
+	\item Dependency Injection - wzorzec pozwalający na tworzenie luźno-powiązanych ze sobą komponentów\english{Loosely coupled}. Pozwala on na sprawny rozwój oprogramowania, skłania do wprowadzania dodatkowej abstrakcji oraz umożliwia uzyskanie \emph{Inversion of Control}. Dzięki wykorzystaniu \emph{ASP.NET Core} i istniejącego w nim systemu zarządzania serwisami zastosowanie go nie wiązało się z koniecznością wykonania dodatkowej pracy.
+	\item Mediator - wzorzec, według którego lepiej jest, gdy istnieje jeden obiekt zarządzający przepływem informacji, niż wiele powiązań pomiędzy mniej znaczącymi elementami\cite{GOF_DESIGN_PATTERNS}. Brak zastosowania tego wzorca, mógłby łatwo doprowadzić do sytuacji, w której kod jest mało czytelny, oraz do wycieków pamięci\english{Memory leak} spowodowanych istnieniem zbędnych referencji pomiędzy obiektami. Aby sprawnie zastosować ten wzorzec, postanowiono skorzystać z pakietu \emph{MediatR}.
 	\item Data Transfer Object - wzorzec, mający na celu zamiany obiektu, na jego odpowiednik, zawierający tylko wymagane dane. Pozwala to na przesyłanie mniejszej ilości danych, jak i na upewnienie się, że nie zostaną zwrócone, żadne nieporządne informacje, takie jak na przykład hash hasła użytkownika.
-	\item Singleton - jeden z najpopularniejszych wzorców projektowych. Jeżeli jakaś klasa go implementuje, oznacza to, że powinna istnieć tylko jedna jej instancja.\cite{GOF_DESIGN_PATTERNS} W przypadku \emph{ASP.NET Core} istnieje specjalny typ serwisu. Jeżeli z niego skorzystamy, to \emph{framework} podczas korzystania z \emph{Dependency Injection} zapewni istnienie tylko jednego takiego obiektu.
-	\item Disposable - wzorzec wykorzystywany w \texttt{C\#} do odpowiedniego zwalniania zasobów zarówno \emph{managed}, jak i \emph{unmanaged}.\cite{DOTNET_DISPOSABLE} Rozwiązuje on problemy takie jak zamknięcie strumieni do plików lub połączenia z bazą danych. Jest on stosowany ze względu na niedeterministyczną naturę \emph{Garbage Collector}a. Aby z niego skorzystać, należy zaimplementować interfejs \texttt{IDisposable}. \emph{ASP.NET Core} potrafi rozpoznać klasy implementujące ten wzorzec i w odpowednim momencie wywołać na nich utylizację\english{Dispose}.
+	\item Singleton - jeden z najpopularniejszych wzorców projektowych. Jeżeli jakaś klasa go implementuje, oznacza to, że powinna istnieć tylko jedna jej instancja\cite{GOF_DESIGN_PATTERNS}. W przypadku \emph{ASP.NET Core} istnieje specjalny typ serwisu. Jeżeli z niego skorzystamy, to \emph{framework} podczas korzystania z \emph{Dependency Injection} zapewni istnienie tylko jednego takiego obiektu.
+	\item Disposable - wzorzec wykorzystywany w \texttt{C\#} do odpowiedniego zwalniania zasobów zarówno \emph{managed}, jak i \emph{unmanaged}\cite{DOTNET_DISPOSABLE}. Rozwiązuje on problemy takie jak zamknięcie strumieni do plików lub połączenia z bazą danych. Jest on stosowany ze względu na niedeterministyczną naturę \emph{Garbage Collector}a. Aby z niego skorzystać, należy zaimplementować interfejs \texttt{IDisposable}. \emph{ASP.NET Core} potrafi rozpoznać klasy implementujące ten wzorzec i w odpowednim momencie wywołać na nich utylizację\english{Dispose}.
 \end{itemize}
 
 \subsection{Simulation Standard}
@@ -83,7 +83,7 @@
 
 \par Dodatkowo, dla wygody użytkownika, dołączone do biblioteki zostały domyśle implementacje \texttt{SimulationParams} i \texttt{SimulationResults}. Są to proste klasy, które inicjalizują wymagane do swojego funkcjonowania komponenty.
 
-\par Wspomniane wcześniej szablony, służą do zdefiniowania typów danych (oraz ich nazw) jakie będą \emph{input}em i \emph{output}em symulacji. Ich relacje z innymi obiektami można sprawdzić na załączonym poniżej diagramie (\ref{fig:simulationStandardTemplates}). Odpowiedzialnością zbliżone są do \texttt{ISimulationParams} i \texttt{ISimulationResults}, gdzie jedyną różnicą jest to, że nie przechowują wartości ale typy danych. Posiadając wartość parametru w postaci tekstowej, jak i wzorca, który go definiuje jesteśmy wstanie odtworzyć odpowiedni obiekt.
+\par Wspomniane wcześniej szablony, służą do zdefiniowania typów danych (oraz ich nazw) jakie będą \emph{input}em i \emph{output}em symulacji. Ich relacje z innymi obiektami można sprawdzić na załączonym poniżej diagramie (\ref{fig:simulationStandardTemplates}). Odpowiedzialnością zbliżone są do \texttt{ISimulationParams} i \texttt{ISimulationResults}, gdzie jedyną różnicą jest to, że nie przechowują wartości, ale typy danych. Posiadając wartość parametru w postaci tekstowej, jak i wzorca, który go definiuje jesteśmy wstanie odtworzyć odpowiedni obiekt.
 
 \begin{figure}[H]
 	\includegraphics[width=\linewidth]{Simulation Standard Templates Diagram}
@@ -99,7 +99,7 @@
 
 \par Zastosowano bibliotekę \emph{Docker.Dotnet}, która pozwala na wykonywanie zapytań do \emph{\docker{} Engine API}. Zawiera ona obiekty reprezentujące zarówno parametry zapytań, jak i uzyskane odpowiedzi. Kolejną istotną jej zaletą jest to, że jej implementacja wspiera asynchroniczne mechanizmy platformy \emph{\dotnet{}}.
 
-\par Ponieważ zarówno zapytania do \emph{\docker{} Engine API}, jak i działania na plikach są to operacje, które mogą zająć znaczącą ilość czasu, to istotnym elementem jest obsługa tych działań w sposób asynchroniczny, aby nie blokować wątku. W implementacji skorzystano z mechanizmu \texttt{async/await} platformy \emph{\dotnet{}}. Dzięki czemu system jest w stanie obsłużyć zapytania w krótszym czasie (wątek \emph{request}u nie jest blokowany, a może wykonywać inne działania, zanim będzie konieczne oczekiwanie).
+\par Ponieważ zarówno zapytania do \emph{\docker{} Engine API}, jak i działania na plikach są to operacje, które mogą zająć znaczącą ilość czasu, to istotnym elementem jest obsługa tych działań w sposób asynchroniczny, aby nie blokować wątku. W implementacji skorzystano z mechanizmu \texttt{async/await} platformy \emph{\dotnet{}}. Dzięki czemu system jest w stanie obsłużyć zapytania w krótszym czasie (wątek \emph{request}u nie jest blokowany, a wręcz może wykonywać inne działania, zanim będzie konieczne oczekiwanie).
 
 \subsection{Docker Watch Service}
 \label{sec:dockerWatchService}
@@ -132,7 +132,7 @@
 
 \par Do jego reprezentacji postanowiono zastosować tak zwaną \emph{Crow's Foot Notation}. Przy procesie tworzenie użyto podejścia \emph{Code First}, co oznacza, że klasy stworzone w \texttt{C\#} są mapowane do odpowiednich tabel. Na schemacie pominięto mniej znaczące elementy (dla przykładu, jako iż klasa \texttt{User} dziedziczy po \texttt{IdentityUser} to jej tabela zawiera informacje potrzebne do pełnego odtworzenia również obiektów tej klasy), aby zachować jego czytelność.
 
-\par Wspomnieć należy tutaj również o ogromnej roli \emph{Entity Framework Core}. Dzięki zapewnionemu przez niego systemowi migracji, możliwe było szybkie dokonywanie zmian w strukturze bazy danych podczas rozwijania aplikacji, bez konieczności usuwania już istniejącej i zaczynania od początku. O ile brak tego mechanizmu spowolniłby proces \emph{development}u, to jego brak nie byłby krytyczny. Tego samego nie można jednak powiedzieć o późniejszym stadium rozwoju. W momencie udostępnienia \emph{software}u użytkownikom, istnienie mechanizmu umożliwiającego wprowadzanie zmian w istniejącej już strukturze danych jest nieocenione.
+\par Wspomnieć należy tutaj również o ogromnej roli \emph{Entity Framework Core}. Dzięki zapewnionemu przez niego systemowi migracji, możliwe było szybkie dokonywanie zmian w strukturze bazy danych podczas rozwijania aplikacji, bez konieczności usuwania już istniejącej i zaczynania od początku. O ile brak tego mechanizmu spowolniłby proces \emph{development}u, to nie byłby krytyczny. Tego samego nie można jednak powiedzieć o późniejszym stadium rozwoju. W momencie udostępnienia \emph{software}u użytkownikom, istnienie mechanizmu umożliwiającego wprowadzanie zmian w istniejącej już strukturze danych jest koniecznością.
 
 \section{Wymagania i Konfiguracja}
 \label{sec:wymaganiaIKonfiguracja}
@@ -193,10 +193,10 @@
 		\item \texttt{user} - nazwa użytkownika bazy danych,
 		\item \texttt{password} - hasło użytkownika bazy danych,
 	\end{itemize}
-	\item \texttt{Kestrel:Certificates:Development:Password} - hasło dla certyfikatu. Zmienna ta może się różnić w zależności od środowiska i certyfikatu jaki jest wykorzystywany. Dla testów użyto \emph{Self-Signed Certificate} wygenerowanego przy użyciu narzędzia \emph{dotnet dev-certs}.\cite{DOTNET_SELFSIGNED_CERTIFICATE}
+	\item \texttt{Kestrel:Certificates:Development:Password} - hasło dla certyfikatu. Zmienna ta może się różnić w zależności od środowiska i certyfikatu jaki jest wykorzystywany. Dla testów użyto \emph{Self-Signed Certificate} wygenerowanego przy użyciu narzędzia \emph{dotnet dev-certs}\cite{DOTNET_SELFSIGNED_CERTIFICATE}.
 \end{itemize}
 
-Aby tego dokonać, należy skorzystać z \emph{Secret Manager}a.\cite{DOTNET_SECRET_MANAGER}
+Aby tego dokonać, należy skorzystać z \emph{Secret Manager}a\cite{DOTNET_SECRET_MANAGER}.
 
 \section{Endpoints}
 
@@ -222,7 +222,7 @@ Aby tego dokonać, należy skorzystać z \emph{Secret Manager}a.\cite{DOTNET_SEC
 	\source{Opracowanie własne.}
 \end{figure}
 
-\par Wartym dodatkowej uwagi jest \emph{endpoint}: \texttt{POST} \emph{/api/Simulation}, ze względu na to, iż weryfikuje on zawartość przesłanego pliku i sprawdza jego zgodność ze standardem. Wykonuje on testy na to, czy zostały zaimplementowane \texttt{ISimulation} oraz \texttt{ISimulationBuilder}, czy istnieje bezparametrowy konstruktor oraz tworzy odpowiednie szablony dla parametrów i rezultatów symulacji. Co za tym wszystkim idzie, wczytuje on przesłany plik i uruchamia kod pochodzący z niego. \emph{Endpoint} ten niestety nie deleguje tego zadania do specjalnego kontenera, ale wykonuje wszystkie działania samodzielnie. Powoduje to istnienie potencjalnej luki bezpieczeństwa. W przypadku chęci udostępnienia tej aplikacji do szerszej publiki, działanie tego \emph{endpoint}u powinno zostać zmienione i również korzystać z konteneryzacji celem bezpiecznego uruchamiania kodu \emph{3\textsuperscript{rd}-party}.
+\par Wartym dodatkowej uwagi jest \emph{endpoint}: \texttt{POST} \emph{/api/Simulation}, ze względu na to, iż weryfikuje on zawartość przesłanego pliku i sprawdza jego zgodność ze standardem. Wykonuje on testy na to, czy zostały zaimplementowane \texttt{ISimulation} oraz \texttt{ISimulationBuilder}, czy istnieje bezparametrowy konstruktor oraz tworzy odpowiednie szablony dla parametrów i rezultatów symulacji. Co za tym wszystkim idzie, wczytuje on przesłany plik i uruchamia kod pochodzący z niego. \emph{Endpoint} ten niestety nie deleguje tego zadania do specjalnego kontenera, ale wykonuje wszystkie działania samodzielnie. Powoduje to istnienie potencjalnej luki bezpieczeństwa. W przypadku chęci udostępnienia tej aplikacji do szerszego audytorium odbiorców, działanie tego \emph{endpoint}u powinno zostać zmienione, aby również korzystało z konteneryzacji celem bezpiecznego uruchamiania kodu \emph{3\textsuperscript{rd}-party}.
 
 \par Aby przesłana symulacja została poprawnie obsłużona przez system, powinna ona implementować \texttt{ISimulationBuilder} oraz \texttt{ISimulation} z biblioteki \emph{Simulation Standard} (więcej informacji na ten temat znajduje się w sekcji \ref{sec:simulationStandard}). Dodatkowo \emph{builder} powinien posiadać bezparametrowy konstruktor. Całość powinna zostać skompilowana do pojedynczego pliku \texttt{.DLL}. Jest to obecne ograniczenie systemu, które może zostać rozwiązane w przyszłości (więcej informacji na ten temat znajduje się w sekcji \ref{subsec:obslugaSymulacjiSkladajacychSieZWieluAssembly}).
 
@@ -278,7 +278,7 @@ Pierwsze z nich są obsługiwane przez mechanizm upoważniania z \emph{ASP.NET C
 	\end{itemize}
 	\item logowaniu się,
 	\item próbie uzyskanie dostępu do danych bez odpowiednich upoważnień,
-	\item wgraniu różnych pliku z symulacjami do systemu, jak i plików zawierających niepoprawne dane.
+	\item wgraniu różnych plików z symulacjami do systemu, jak i plików zawierających niepoprawne dane.
 \end{itemize}
 
 Wszystkie testy zakończyły się powodzeniem. Uzyskano oczekiwane rezultaty w formie odpowiedzi ze strony serwera oraz odpowiedniego kodu \emph{HTTP}.

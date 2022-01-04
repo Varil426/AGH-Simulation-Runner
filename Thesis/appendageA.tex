@@ -62,7 +62,7 @@ Wartymi szczególnej uwagi są tutaj:
 
 Natomiast za pomocą \texttt{RabbitsInitialPopulation} i \texttt{WolvesInitialPopulation} będziemy sterować początkowymi populacjami ssaków na wyspie. Symulacja kończy się w momencie wymarcia wszystkich kreatur lub przekroczeniu czasu \texttt{Timeout}.
 
-\subsection{Test 1: Zerowa populacja królików}
+\section{Test 1: Zerowa populacja królików}
 
 \par W przypadku pierwszego testu, postanowiona sprawdzić czy założenia symulacji pokryją się z otrzymanymi wynikami. Przy zerowej populacji królików, wszystkie wilki powinny po pewnym czasie wymrzeć z głodu. Sukces tego testu możemy zaobserwować na grafie \ref{fig:rabbitIslandTest1Diagram1}, który powstał na bazie otrzymanych wyników. Początkową populację ustawiono na \emph{14}.
 
@@ -73,7 +73,7 @@ Natomiast za pomocą \texttt{RabbitsInitialPopulation} i \texttt{WolvesInitialPo
 	\label{fig:rabbitIslandTest1Diagram1}
 \end{figure}
 
-\subsection{Test 2: Zerowa populacja wilków}
+\section{Test 2: Zerowa populacja wilków}
 
 \par Drugi test sprawdza sytuację analogiczną do pierwszej, tym razem jednak z królikami w roli głównej. Ilość stworzeń na start ustawiono na \emph{14}. Przewidywane są dwa poprawne rezultaty:
 \begin{itemize}
@@ -90,7 +90,7 @@ Natomiast za pomocą \texttt{RabbitsInitialPopulation} i \texttt{WolvesInitialPo
 
 \par Na bazie otrzymanego wyniku (grafika \ref{fig:rabbitIslandTest2Diagram1}), możemy stwierdzić, że spełnił się drugi z przewidywanych scenariuszy, jednak nie ze względu na naturalną stabilizację, ale twardy limit stworzeń, ustawiony przez jeden z parametrów. Okresem wzbudzającym zainteresowanie, jest pierwsze kilka dni, gdzie widzimy, jak gromadzi się nadmiar owoców. Ilość owoców osiągnęła swoje globalne maksimum na początku piątego dnia. Rezultaty tego dostatku, możemy zaobserwować w następnych dniach, gdzie występują największe przyrosty populacji królików (koreluje to z ustawionym czasem trwania ciąży - \emph{2 dni}).
 
-\subsection{Test 3: Mieszanie wilków z królikami}
+\section{Test 3: Mieszanie wilków z królikami}
 
 \par Ostatni z wykonanych testów miał za zadanie sprawdzić interakcję pomiędzy dwoma typami stworzeń. Początkowe populacje zostały ustawione na \emph{14} wilków i \emph{24} króliki. Wszystkie pozostałe parametry pozostały bez zmian.
 

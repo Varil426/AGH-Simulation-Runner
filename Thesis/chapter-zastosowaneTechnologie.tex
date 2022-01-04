@@ -7,37 +7,37 @@
 
 \par Platforma \dotnet{} jako darmowa, \emph{open-source}owa oraz nieustannie rozwijana, wydaje się naturalnym wyborem dla stworzenia \emph{Back-End}u proponowanej aplikacji. Posiada ona uznane przez developerów \emph{framework}i, które pozwalają na szybkie tworzenie skalowalnych aplikacji webowych. Ważnym jej atutem jest zdolność do dynamicznego ładowania i usuwania z pamięci tak zwanych \emph{assemblies}, czyli fundamentalnych bloków, które zawierają informacje o klasach i metodach, oraz ich implementacje. Pozwala to na uruchomienie zewnętrznego kodu bez potrzeby rekompilacji aplikacji.
 
-\par Wersja jaka została wybrana to \emph{\dotnet{} 6}, jako najnowsza dostępna (zapewniająca najdłuższe wsparcie LTS \footnote{Long-term Support}\footnote{Wsparcie dla \dotnet{} 6 ma trwać do Listopada 2024 roku.}), obsługujące język \verb|C#| w wersji 10. Ważnym atutem tej edycji .NET jest jej \emph{corss-platform}owość. Platforma ta od wersji \dotnet{} Core (która ukazała się w 2016 roku) wspiera wszystkie najważniejsze \emph{OS}\footnote{Operating System}, czyli \emph{Windows}a, \emph{Linux}a i \emph{MacOS}a, a wliczając \emph{Xamarin}\footnote{Implementacja standardu \dotnet{} na platformach mobilnych.} również platformy mobilne (\emph{iOS} i \emph{Android}). Pozwala to na uruchamianie aplikacji, korzystając z serwerów działających w oparciu o system operacyjny \emph{Linux}, jak i w lekkich kontenerach opartych również o niego.\cite{DOTNET_DOCUMENTATION}
+\par Wersja jaka została wybrana to \emph{\dotnet{} 6}, czyli najnowsza dostępna (zapewniająca najdłuższe wsparcie LTS \footnote{Long-term Support}\footnote{Wsparcie dla \dotnet{} 6 ma trwać do Listopada 2024 roku.}), obsługująca język \verb|C#| w wersji 10. Ważnym atutem tej edycji .NET jest jej \emph{corss-platform}owość. Platforma ta od wersji \dotnet{} Core (która ukazała się w 2016 roku) wspiera wszystkie najważniejsze \emph{OS}\footnote{Operating System}, czyli \emph{Windows}a, \emph{Linux}a i \emph{MacOS}a, a wliczając \emph{Xamarin}\footnote{Implementacja standardu \dotnet{} na platformach mobilnych.} również platformy mobilne (\emph{iOS} i \emph{Android}). Pozwala to na uruchamianie aplikacji, korzystając z serwerów działających w oparciu o system operacyjny \emph{Linux}, jak i w lekkich kontenerach opartych również o niego\cite{DOTNET_DOCUMENTATION}.
 
 \subsection{ASP.NET Core}
 
-\par Popularny, \emph{open-source}owy \emph{framework} do tworzenia aplikacji webowych w \dotnet{}. Został on wybrany ze względu na istniejące do niego rozszerzenia i przystosowanie do bycia uruchamianym na wielu platformach, w tym przy użyciu \emph{Docker}a.\cite{ASPNET_DOCUMENTATION}
+\par Popularny, \emph{open-source}owy \emph{framework} do tworzenia aplikacji webowych w \dotnet{}. Został on wybrany ze względu na istniejące do niego rozszerzenia i przystosowanie do bycia uruchamianym na wielu platformach, w tym przy użyciu \emph{Docker}a\cite{ASPNET_DOCUMENTATION}.
 
 \subsection{Entity Framework Core}
 
-\par \emph{Cross-platform}owy \emph{framework} ułatwiający zarządzanie danymi zapisanymi w bazie danych. Pozwala on na automatyczne mapowanie obiektów i ich właściwości\english{Properties} do odpowiadającej reprezentacji w formie rekordu, jak i na tworzenie relacji między tabelami. Dodana w ten sposób dodatkowa warstwa abstrakcji pozwala na skorzystanie z dowolnego \emph{provider}a spośród wspieranych. Dodatkowo \emph{Entity Framework Core} wspiera tak zwany \emph{Lazy Loading}, co pozwala znacząco przyśpieszyć działanie aplikacji poprzez ładowanie tylko wymaganych danych i późniejsze doładowywanie dodatkowych.\cite{ENTITY_FRAMEWORK_DOCUMENTATION}
+\par \emph{Cross-platform}owy \emph{framework} ułatwiający zarządzanie danymi zapisanymi w bazie danych. Pozwala on na automatyczne mapowanie obiektów i ich właściwości\english{Properties} do odpowiadającej reprezentacji w formie rekordu, jak i na tworzenie relacji między tabelami. Dodana w ten sposób dodatkowa warstwa abstrakcji pozwala na skorzystanie z dowolnego \emph{provider}a spośród wspieranych. Dodatkowo \emph{Entity Framework Core} wspiera tak zwany \emph{Lazy Loading}, co pozwala znacząco przyśpieszyć działanie aplikacji poprzez ładowanie tylko wymaganych danych i późniejsze doładowywanie dodatkowych\cite{ENTITY_FRAMEWORK_DOCUMENTATION}.
 
 \subsection{Swagger}
 \label{subsec:swagger}
 
-\par \emph{Swagger} jest narzędziem do generowania dokumentacji, interfejsu, który pozwala zagłębić się w tę dokumentację, jak i przykładowych danych wejściowych i wyjściowych. Narzędzie to zostało wybrane aby usprawnić proces dokumentowania stworzonej aplikacji. Dodatkowym atutem jest możliwość integracji z \emph{Netonsoft JSON}, czyli inną biblioteką wykorzystaną w tym projekcie.\cite{SWAGGER_DOCUMENTATION}
+\par \emph{Swagger} jest narzędziem do generowania dokumentacji i interfejsu, który pozwala zagłębić się w tę dokumentację, jak i przykładowych danych wejściowych i wyjściowych. Narzędzie to zostało wybrane aby usprawnić proces dokumentowania stworzonej aplikacji. Dodatkowym atutem jest możliwość integracji z \emph{Netonsoft JSON}, czyli inną biblioteką wykorzystaną w tym projekcie\cite{SWAGGER_DOCUMENTATION}.
 
 \subsection{Docker.Dotnet}
 
-\par \emph{Open-source}owa biblioteka, która jest rozwijana pod banerem \emph{.NET Foundation}\footnote{Organizacja mająca na celu rozwój oprogramowania \emph{open-source} dla platformy \emph{\dotnet{}}.}. Pozwala ona na wykonywanie zapytań do \emph{Docker Engine API} w sposób asynchroniczny. Możliwe jest dzięki niej budowanie obrazów, tworzenie, uruchamianie i usuwanie kontenerów oraz sprawdzanie ich stanu. Istotną jej zaletą jest wsparcie dla wykonywania operacji w sposób asynchroniczny.\cite{DockerDotNet_GitHub}
+\par \emph{Open-source}owa biblioteka, która jest rozwijana pod banerem \emph{.NET Foundation}\footnote{Organizacja mająca na celu rozwój oprogramowania \emph{open-source} dla platformy \emph{\dotnet{}}.}. Pozwala ona na wykonywanie zapytań do \emph{Docker Engine API} w sposób asynchroniczny. Możliwe jest dzięki niej budowanie obrazów, tworzenie, uruchamianie i usuwanie kontenerów oraz sprawdzanie ich stanu. Istotną jej zaletą jest wsparcie dla wykonywania operacji w sposób asynchroniczny\cite{DockerDotNet_GitHub}.
 
 \subsection{Pozostałe biblioteki}
 
 \begin{itemize}
 	\item MediatR - prosta biblioteka implementująca wzorzec projektowy \emph{Mediator}. Wspiera ona \emph{request/response}, polecenia\english{Commands}, \emph{query}, powiadomienia\english{Notifications} oraz wydarzenia\english{Events}. Dodatkowo może działać zarówno synchronicznie, jak i asynchronicznie. Więcej informacji na temat tego wzorca, można znaleźć w sekcji \ref{subsec:zastosowaneWzorceProjektowe}.
 	\item AutoMapper - biblioteka pozwalająca na automatyczne mapowanie właściwości obiektów. Jej główną zaletą jest możliwość szybkiego tworzenia nowych instancji (na przykład DTO\footnote{Data Transfer Object}), bez konieczności samodzielnej implementacji generycznych fragmentów kodu.
-	\item FluentValidation - weryfikacja dostarczonych danych jest koniecznością podczas tworzenia oprogramowania, w interakcję z którym, wchodzi użytkownik. Istotnym elementem, jest aby takowa weryfikacja była projektowana, według pewnego wzorca i przystępna do modyfikacji w przyszłości. Problemy te rozwiązuje biblioteka \emph{FluentValidation}. Dostarcza ona narzędzia, które pozwalają tworzyć zestawy reguł, na bazie których nastąpi później, na przykład weryfikacja zapytania.
+	\item FluentValidation - weryfikacja dostarczonych danych jest koniecznością podczas tworzenia oprogramowania, w interakcję z którym, wchodzi użytkownik. Istotnym elementem jest, aby takowa weryfikacja była projektowana, według pewnego wzorca i przystępna do modyfikacji w przyszłości. Problemy te rozwiązuje biblioteka \emph{FluentValidation}. Dostarcza ona narzędzia, które pozwalają tworzyć zestawy reguł, na bazie których nastąpi później, na przykład weryfikacja zapytania.
 	\item Newtonsoft JSON - biblioteka zawierająca narzędzia wspomagające działanie na obiektach zapisanych w formacie \emph{JSON}. Zapewnia ona funkcjonalność potrzebną do serializacji, jak i deserializacji z dodatkową możliwością przechowywania informacji o typie danych. Pozwala to na dokładne odtworzenie konkretnych instancji.
 \end{itemize}
 
 \section{\docker{}}
 
-\par Platforma dostosowana do przygotowywania oraz uruchamiania oprogramowania w formie tak zwanych kontenerów. Wykorzystuje do tego \emph{OS-level virtualization}, co pozwala na osiągnięcie lepszej wydajności i mniejsze zużycie pamięci operacyjnej systemu \emph{host}a, niż na przykład tradycyjna wirtualizacja z użyciem \emph{Virtual Machine}.\cite{DOCKER_DOCUMENTATION}
+\par Platforma dostosowana do przygotowywania oraz uruchamiania oprogramowania w formie tak zwanych kontenerów. Wykorzystuje do tego \emph{OS-level virtualization}, co pozwala na osiągnięcie lepszej wydajności i mniejsze zużycie pamięci operacyjnej systemu \emph{host}a, niż na przykład tradycyjna wirtualizacja z użyciem \emph{Virtual Machine}\cite{DOCKER_DOCUMENTATION}.
 
 \section{PostgreSQL}
 
@@ -45,8 +45,8 @@
 
 \section{Postman API Platform}
 
-\par Aplikacja służąca do testowania API. Pozwala na wykonywanie zapytań, edytowanie ich treści, łączenie ich w grupy. Wspiera wiele rodzaj uwierzytelniania, w tym z użyciem \emph{Token}u. Dodatkowo istnieje możliwość definiowania zmiennych, które można wykorzystać w \emph{request}ach, tworzenia skryptów jak i testów.\cite{POSTMAN_DOCUMENTATION}
+\par Aplikacja służąca do testowania API. Pozwala na wykonywanie zapytań, edytowanie ich treści, łączenie ich w grupy. Wspiera wiele rodzaj uwierzytelniania, w tym z użyciem \emph{Token}u. Dodatkowo istnieje możliwość definiowania zmiennych, które można wykorzystać w \emph{request}ach, tworzenia skryptów jak i testów\cite{POSTMAN_DOCUMENTATION}.
 
 \section{Git}
 
-\par Jako system kontroli wersji zostało wybrane oprogramowanie \emph{Git}. Narzędzie to jest \emph{open-source}owe oraz ekstensywnie stosowane w współczesnym rozwoju oprogramowania zarówno przez hobbistów, jak i profesjonalistów. Pomimo jednoosobowej natury pracy dyplomowej, która nie powodowała konieczności synchronizacji wersji projektu z resztą zespołu, możliwość śledzenia zmian, jak i rozwijania oraz testowania wielu funkcjonalności równolegle (dzięki możliwości skorzystania z tak zwanych gałęzi\english{Branches}) jest nieoceniona.
+\par Jako system kontroli wersji zostało wybrane oprogramowanie \emph{Git}. Narzędzie to jest \emph{open-source}owe oraz ekstensywnie stosowane w współczesnym rozwoju oprogramowania zarówno przez hobbistów, jak i profesjonalistów. Pomimo jednoosobowej natury pracy dyplomowej, która nie powodowała konieczności synchronizacji wersji projektu z resztą zespołu, możliwość śledzenia zmian, jak i rozwijania oraz testowania wielu funkcjonalności równolegle (dzięki możliwości skorzystania z tak zwanych gałęzi\english{Branches}) pozostaje nieoceniona.

@@ -7,10 +7,10 @@
 
 \par Projekt ten ma jednak w sobie wciąż duży potencjał. Możliwości na rozwój jest wiele (kilka z nich została przedstawionych w następnej sekcji, to jest \ref{sec:mozliwyDalszyRozwoj}). Poruszenie tematów takich jak różnice pomiędzy różnymi systemami kolejkowania, obliczenia z wykorzystaniem systemów rozproszonych czy w końcu różnymi metodami wirtualizacji.
 
-\section{Możliwy dalszy rozwój}
+\section{Możliwość rozwoju projektu}
 \label{sec:mozliwyDalszyRozwoj}
 
-\subsection{Wersjonowanie Simulation Standardu}
+\subsection{Wersjonowanie edycji Simulation Standard}
 
 \par W dalszym rozwoju zaprezentowanej w tej pracy aplikacji wymagany byłby system wersjonowania \emph{Simulation Standard}u. Główną zaletą takiego podejścia byłaby kompatybilność wsteczna\english{Backward Compatibility}. Jeżeli aplikacja zostałaby uruchomiona dla użytkowników, to niepożądanym rezultatem byłaby niemożliwość uruchomienia stworzonego wcześniej oprogramowania. Z dokładnie tego samego powodu różne wersje \emph{API} często działają równolegle.
 
@@ -18,9 +18,9 @@
 
 \par Innym dość oczywistym rozszerzeniem jest zastosowanie \emph{Docker Host}a, który działałby na innej maszynie. Otworzyłoby to dodatkowo drogę do uruchomienia takiego serwisu na większej ilości urządzeń, co z kolei pozwoliłoby na lepsze skalowanie się systemu, jak i na zwiększenie jego stabilności, poprzez mniejszą zależność od konkretnej maszyny. Możliwą implementacją byłoby uruchomianie specjalnego serwisu na każdym z urządzeń, który przygotowywałby odpowiednie pliki po ich otrzymaniu (na przykład za pośrednictwem protokołu \texttt{\https{}}) lub pobierał je bezpośrednio z bazy danych.
 
-\subsection{Udostępnienie Simulation Standardu jako pakiet NuGet}
+\subsection{Udostępnienie Simulation Standardu jako pakietu NuGet}
 
-\par Jako iż przygotowany standard został upubliczniony na \emph{GitHub}ie w formie \emph{Open Source}, to nie istnieją żadne przeciwwskazania przed udostępnieniem go jako pakiet \emph{NuGet}\footnote{Menadżer pakietów używany w środowisku \emph{\dotnet{}}}. Ułatwiłoby to dostęp do najnowszej wersji (jak i poprzednich) dla użytkowników, jak i zapewniło prosty mechanizm do aktualizowania wersji standardu używanej w projektach.
+\par Jako iż przygotowany standard został upubliczniony na \emph{GitHub}ie w formie \emph{Open Source}, to nie istnieją żadne przeciwwskazania przed udostępnieniem go jako pakietu \emph{NuGet}\footnote{Menadżer pakietów używany w środowisku \emph{\dotnet{}}}. Ułatwiłoby to dostęp do najnowszej wersji (jak i poprzednich) dla użytkowników, jak i zapewniło prosty mechanizm do aktualizowania wersji standardu używanej w projektach.
 
 \subsection{Aplikacja Frontendowa}
 
