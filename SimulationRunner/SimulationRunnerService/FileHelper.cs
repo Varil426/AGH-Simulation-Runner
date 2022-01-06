@@ -3,8 +3,6 @@
 internal static class FileHelper
 {
     public static string DataDirectoryPath => Path.GetFullPath(Environment.GetEnvironmentVariable("SIMULATION_RUNNER_SERVICE_DATA_PATH") ?? "data");
-
-    // TODO Improve to detect whether it's .dll or .zip
     public static string SimulationFilesPath => Path.ChangeExtension(Path.Combine(DataDirectoryPath, ISimulationHandler.SimulationFileFileName), "dll");
 
     public static string SimulationParametersTemplatePath => Path.ChangeExtension(Path.Combine(DataDirectoryPath, ISimulationHandler.SimulationParametersTemplateFileName), ISimulationHandler.JsonFileExtension.ToLower());
@@ -30,5 +28,5 @@ internal static class FileHelper
     /// Checks directory structure. Looks for all files necessary to run a simulation.
     /// </summary>
     /// <returns><see langword="true"/> if every needed file is present; <see langword="false"/> otherwise.</returns>
-    internal static bool CheckDirectoryStructure() => Directory.Exists(DataDirectoryPath) && File.Exists(SimulationFilesPath) && File.Exists(SimulationResultsTemplatePath) && File.Exists(SimulationParametersPath); // TODO Templates are not necessary anymore
+    internal static bool CheckDirectoryStructure() => Directory.Exists(DataDirectoryPath) && File.Exists(SimulationFilesPath) && File.Exists(SimulationResultsTemplatePath) && File.Exists(SimulationParametersPath);
 }

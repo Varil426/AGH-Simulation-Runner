@@ -26,8 +26,7 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
         while (!stoppingToken.IsCancellationRequested)
         {
             await PerformTask();
-            //Thread.Sleep(TimeSpan.FromSeconds(30)); // TODO
-            Thread.Sleep(TimeSpan.FromSeconds(5));
+            Thread.Sleep(TimeSpan.FromSeconds(10));
         }
     }
 
@@ -36,11 +35,6 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
         var results = await CollectRunAttemptsResults();
         await StoreSimulationResults(results);
         await RemoveDockerContainers(results.Select(x => x.Value.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing container name.")));
-
-        // TODO Add queuing logic
-        // TODO Get container error and store it in DB. Update thesis.
-        // TODO Change handling of BLOBs (separate DB? File system? some other system?)
-        // TODO ZIP Handling
     }
 
     private async Task RemoveDockerContainers(IEnumerable<string> containerNames)
@@ -72,7 +66,7 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
         using var dataContext = _serviceScopeFactory.CreateAsyncScope().ServiceProvider.GetService(typeof(DataContext)) as DataContext ?? throw new Exception();
         var runAttempt = await dataContext.RunAttempts.FirstOrDefaultAsync(x => x.Id == runAttemptId) ?? throw new Exception("Run Attempt not found.");
 
-        runAttempt.End = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc); // TODO Improve
+        runAttempt.End = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);
 
         var containerDataPath = _dockerContainerManager.GetContainerDataPath(containerResponse.Names.FirstOrDefault()?.Replace("/", string.Empty) ?? throw new Exception("Missing Container Name"));
         var resultsFilePath = Path.ChangeExtension(Path.Combine(containerDataPath, ISimulationHandler.SimulationResultsFileName), ISimulationHandler.JsonFileExtension);
@@ -82,7 +76,6 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
             using var streamReader = new StreamReader(fileStream);
             var results = _simulationHandler.CreateSimulationResults(await streamReader.ReadToEndAsync());
 
-            // TODO Should be moved to different class
             foreach (var resultValue in results.Results)
             {
                 var resultTemplate = runAttempt.Simulation.SimulationResultsTemplate.FirstOrDefault(x => x.Name == resultValue.Key) ?? throw new Exception("Result Template not found");
@@ -98,7 +91,6 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
                     value = null;
                     if (resultValue.Value is IEnumerable list)
                     {
-                        // TODO Improve
                         var index = 0;
                         foreach (var listValue in list)
                         {
@@ -121,7 +113,6 @@ public class DockerWatchService : BackgroundService, IDockerWatchService
         }
         catch (FileNotFoundException)
         {
-            // TODO Error simulation exited without results? - Add error
         }
 
         await dataContext.SaveChangesAsync();

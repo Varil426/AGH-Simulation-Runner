@@ -32,6 +32,4 @@ public interface IDockerContainerManager : IDisposable
     public Task CleanAfterContainer(string containerName);
 
     public Task CleanAndRemoveContainer(string containerName);
-
-    // TODO Rest
 }

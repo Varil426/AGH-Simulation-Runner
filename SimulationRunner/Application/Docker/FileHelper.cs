@@ -19,14 +19,11 @@ internal static class FileHelper
         if (!attributes.HasFlag(FileAttributes.Directory))
             throw new ArgumentException("Expected path to directory.");
 
-        var outputFilePath = Path.ChangeExtension(directoryPath, _tarFileExtension); //$"{directoryName}.{_tarFileExtension}";
+        var outputFilePath = Path.ChangeExtension(directoryPath, _tarFileExtension);
         using var outStream = File.Create(outputFilePath);
         using var gzoStream = new GZipOutputStream(outStream);
         using var tarArchive = TarArchive.CreateOutputTarArchive(gzoStream);
 
-        /*var entry = TarEntry.CreateEntryFromFile(directoryPath);
-        entry.Name = String.Empty; 
-        await Task.Run(() => tarArchive.WriteEntry(entry, true));*/
         var entries = new List<TarEntry>();
         AddAllFilesRecursively(entries, directoryPath, directoryPath);
 

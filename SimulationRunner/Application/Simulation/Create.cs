@@ -44,21 +44,13 @@ public class Create
                 ?? throw new RestException(System.Net.HttpStatusCode.InternalServerError, new { User = "Not found."});
 
             var basePath = Path.Combine(Directory.GetCurrentDirectory() + @"\Files\");
-            /*if (!Directory.Exists(basePath))
-                Directory.CreateDirectory(basePath);
-            var filePath = Path.Combine(basePath, request.File.FileName);*/
+
             var fileType = Path.GetExtension(request.File.FileName).ToLowerInvariant() switch
             {
                 ".zip" => Domain.Simulation.AllowedFileTypesEnum.ZIP,
                 ".dll" => Domain.Simulation.AllowedFileTypesEnum.DLL,
                 _ => Domain.Simulation.AllowedFileTypesEnum.Uknown
             };
-
-            /*if (!File.Exists(filePath))
-            {
-                using var stream = new FileStream(filePath, FileMode.Create);
-                await request.File.CopyToAsync(stream);
-            }*/
 
             // Save to temporary file
             var tempFilePath = Path.GetTempFileName();
@@ -108,7 +100,7 @@ public class Create
                 case Domain.Simulation.AllowedFileTypesEnum.DLL:
                     _simulationHandler.CheckSimulationAssembly(simulationFilePath, out var errors);
                     return errors;
-                case Domain.Simulation.AllowedFileTypesEnum.ZIP: // TODO
+                case Domain.Simulation.AllowedFileTypesEnum.ZIP:
                 default:
                     throw new RestException(System.Net.HttpStatusCode.BadRequest, new { Simulation = "File type not allowed" });
             }

@@ -24,8 +24,6 @@ public class Run
 
         public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
         {
-            /*var user = await _dataContext.Users.FirstOrDefaultAsync(user => user.Email == _userAccessor.GetCurrentUserEmailAddress()) 
-                ?? throw new RestException(System.Net.HttpStatusCode.BadRequest, new { User = "Not found"});*/
             var simulation = await _dataContext.Simulations.FirstOrDefaultAsync(simulation => simulation.Id == request.SimulationId)
                 ?? throw new RestException(System.Net.HttpStatusCode.BadRequest, new { Simulation = "Not found" });
 
@@ -34,7 +32,6 @@ public class Run
                 await _dockerContainerManager.RunSimulationAsync(simulation, _dataContext, parameters);
             }
 
-            //await _dataContext.SaveChangesAsync();
             return Unit.Value;
         }
     }

@@ -61,7 +61,7 @@ builder.Services
             ValidateAudience = true,
             ValidAudience = builder.Configuration["JWT:Audience"],
             ValidIssuer = builder.Configuration["JWT:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"])) // TODO Add secret
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["TokenKey"]))
         };
     });
 builder.Services.AddAuthorization(options =>
@@ -105,7 +105,7 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    // TODO
+
 }
 
 var app = builder.Build();

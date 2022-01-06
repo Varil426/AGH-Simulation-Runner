@@ -28,9 +28,6 @@ public class DockerContainerManager : IDockerContainerManager
     private readonly IConfiguration _configuration;
     private readonly string _containersDirectoriesRootPath;
     private readonly string _containersHostDirectoryPath;
-    //private readonly string _simulationRunnerServicePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location)!, "SimulationRunnerService");
-    //private readonly string _simulationRunnerServiceDockerfileName = "DockerfileDockerApi";
-    //private readonly string _dockerRepository = "simulationrunnerservice";
     private readonly string _dockerImageId;
 
     public DockerContainerManager(IServiceScopeFactory serviceScopeFactory, ISimulationHandler simulationHandler, IConfiguration configuration)
@@ -51,28 +48,6 @@ public class DockerContainerManager : IDockerContainerManager
         _dockerClient.DefaultTimeout = TimeSpan.FromSeconds(30);
 
         _dockerImageId = configuration.GetValue<string>("SimulationRunnerServiceDockerImage");
-
-        // TODO Dynamic Docker Image Creation
-        /*
-        var tarArchivePathTask = FileHelper.CreateTarArchive(_simulationRunnerServicePath);
-        tarArchivePathTask.Wait();
-        var tarArchivePath = tarArchivePathTask.Result;
-
-        using var fileStream = new FileStream(tarArchivePath, FileMode.Open);
-
-        var buildParameters = new ImageBuildParameters
-        {
-            Dockerfile = _simulationRunnerServiceDockerfileName,
-        };
-        buildParameters.Tags = new List<string> { $"{_dockerRepository}:latest" };
-        var imageCreation = _dockerClient.Images.BuildImageFromDockerfileAsync(buildParameters, fileStream, null, null, new Progress<JSONMessage>(json =>
-        {
-            if (json.ErrorMessage != null)
-                throw new Exception();
-        }));
-
-        imageCreation.Wait();
-        */
     }
 
     public IReadOnlyDictionary<Domain.User, List<(string ContainerId, SimulationRunAttempt RunAttempt)>> UsersContainers => new ReadOnlyDictionary<Domain.User, List<(string, SimulationRunAttempt)>>(_containers);
@@ -81,14 +56,9 @@ public class DockerContainerManager : IDockerContainerManager
 
     public async Task<SimulationRunAttempt> RunSimulationAsync(Domain.Simulation simulation, DataContext dataContext,  Dictionary<string, JsonElement> parameters)
     {
-        var simulationRunAttempt = new SimulationRunAttempt { Simulation = simulation, AttemptNumer = simulation.SimulationRunAttempts.Distinct().Count(), Id = Guid.NewGuid(), Start = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc) /* TODO Improve */ }; // dataContext.CreateProxy<SimulationRunAttempt>() 
-        /*var simulationRunAttempt = dataContext.CreateProxy<SimulationRunAttempt>();
-        simulationRunAttempt.Simulation = simulation;
-        simulationRunAttempt.AttemptNumer = simulation.SimulationRunAttempts.Count + 1;
-        simulationRunAttempt.Id = Guid.NewGuid();
-        simulationRunAttempt.Start = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc);*/
+        var simulationRunAttempt = new SimulationRunAttempt { Simulation = simulation, AttemptNumer = simulation.SimulationRunAttempts.Distinct().Count(), Id = Guid.NewGuid(), Start = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc) };
 
-        dataContext.RunAttempts.Add(simulationRunAttempt); // TODO Check out why it has to be done that way. It should work without this. (Adding Related Entities; The database operation was expected to affect 1 row(s), but actually affected 0 row(s); Multithreaded EF) (https://github.com/dotnet/efcore/issues/19761)
+        dataContext.RunAttempts.Add(simulationRunAttempt);
         simulation.SimulationRunAttempts.Add(simulationRunAttempt);
 
         var containerName = simulationRunAttempt.Id.ToString();
@@ -110,7 +80,6 @@ public class DockerContainerManager : IDockerContainerManager
 
     private async Task StoreSimumationParameters(SimulationParams simulationParams, SimulationRunAttempt simulationRunAttempt, DataContext dataContext)
     {
-        // TODO Should be moved to different class
         foreach (var paramValue in simulationParams.Params)
         {
             var paramTemplate = simulationRunAttempt.Simulation.SimulationParamsTemplate.FirstOrDefault(x => x.Name == paramValue.Key) ?? throw new Exception("Param Template not found");
@@ -126,7 +95,6 @@ public class DockerContainerManager : IDockerContainerManager
                 value = null;
                 if (paramValue.Value is IEnumerable list)
                 {
-                    // TODO Improve
                     var index = 0;
                     foreach (var listValue in list)
                     {
@@ -196,8 +164,7 @@ public class DockerContainerManager : IDockerContainerManager
             Name = name,
             NetworkDisabled = true,
             HostConfig = new() { Mounts = new List<Mount>() },
-            //Entrypoint = new List<string> { "dotnet", "SimulationRunnerService.dll" }
-            StopTimeout = TimeSpan.FromMinutes(30), // TODO Change
+            StopTimeout = TimeSpan.FromMinutes(30),
             Env = new List<string> { $"SIMULATION_RUNNER_SERVICE_DATA_PATH={CONTAINTER_DATA_DIRECTORY_PATH}" }
         };
 
@@ -229,8 +196,6 @@ public class DockerContainerManager : IDockerContainerManager
 
     private async Task PrepareSimulationFiles(string directoryPath, Domain.Simulation simulation, ISimulationParams parameters, ISimulationParamsTemplate paramsTemplate, ISimulationResultsTemplate resultsTemplate)
     {
-        // TODO Add factories
-
         // Place simulation file
         var simulationFilePath = Path.ChangeExtension(Path.Combine(directoryPath, ISimulationHandler.SimulationFileFileName), simulation.FileType.ToString().ToLower());
         using var simulationFileFileStream = new FileStream(simulationFilePath, FileMode.OpenOrCreate);

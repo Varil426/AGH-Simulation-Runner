@@ -10,7 +10,6 @@ public abstract class ValueOfCollection
         Index = index;
     }
 
-    // TODO Remove setters from all Id - move them to constructors
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
     public Guid Id { get; set; }

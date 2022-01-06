@@ -15,7 +15,6 @@ namespace SimulationRunnerService
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            // TODO Add some error handling mechanism?
             try
             {
                 if (!FileHelper.CheckDirectoryStructure())
